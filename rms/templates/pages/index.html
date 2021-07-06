@@ -1,0 +1,9 @@
+{% extends 'pages/base.html' %}
+
+{% block main %}
+    {% if request.user.is_authenticated %}
+    <h1>Logged in as {{request.user}}</h1>
+    {% else %}
+    <h1>Welcome to RMS</h1>
+    {% endif %}
+{% endblock %}
