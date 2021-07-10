@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 django = "*"
+django-shopping-cart = "*"
+pillow = "*"
 
 [dev-packages]
 
