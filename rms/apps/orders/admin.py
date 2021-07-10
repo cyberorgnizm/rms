@@ -6,6 +6,6 @@ class InvoicesAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(models.Order)
+@admin.register(models.PurchaseOrder)
 class OrdersAdmin(admin.ModelAdmin):
     pass
