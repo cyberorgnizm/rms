@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.utils.translation import gettext_lazy
+from django.conf import settings
 
 
 admin.site.site_title = gettext_lazy("RMS site admin")
@@ -29,3 +30,11 @@ urlpatterns = [
     path("accounts/", include("rms.apps.accounts.urls")),
     path('admin/', admin.site.urls),
 ]
+
+if settings.DEBUG:
+    from django.conf.urls.static import static
+
+    # serve static files
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    # server files uploaded
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
