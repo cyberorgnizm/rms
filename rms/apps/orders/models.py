@@ -22,6 +22,9 @@ class PurchaseOrder(models.Model):
     status = models.CharField(max_length=255, choices=ORDER_STATUS)
     total_price = models.DecimalField(decimal_places=2, max_digits=5)
 
+    class Meta:
+        verbose_name_plural = "Orders"
+    
     def __str__(self):
         return f"ORDER NO: #{self.order_id}"
 

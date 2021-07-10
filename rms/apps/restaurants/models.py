@@ -37,6 +37,9 @@ class CafeteriaMenu(models.Model):
     def __str__(self) -> str:
         return self.name
 
+    class Meta:
+        verbose_name_plural = "Menus"
+
 
 class Review(models.Model):
     """Model for managing reviews on cafeterias menus"""
