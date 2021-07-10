@@ -12,7 +12,7 @@ class Cafeteria(models.Model):
     cafeteria_work_hours = models.DurationField()
 
     def __str__(self):
-        return self.name
+        return self.cafeteria_name
 
 class CafeteriaMenu(models.Model):
     """Model for managing menus available at campus cafeterias"""
