@@ -153,5 +153,6 @@ cython_debug/
 # Generated path
 cafeterias
 users
+products
 
 # End of https://www.toptal.com/developers/gitignore/api/django

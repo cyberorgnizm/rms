@@ -1,9 +1,18 @@
 from django.contrib import admin
 from . import models
 
+class CafeteriaReviewTabularAdmin(admin.TabularInline):
+    model = models.CafeteriaReview
+    extra = 0
+
+
 @admin.register(models.Cafeteria)
 class CafeteriaAdmin(admin.ModelAdmin):
     readonly_fields = ('image_tag',)
+
+    inlines = [
+        CafeteriaReviewTabularAdmin
+    ]
 
     def image_tag(self, obj):
         """Image preview in Django Admin"""
@@ -13,12 +22,14 @@ class CafeteriaAdmin(admin.ModelAdmin):
     image_tag.short_description = 'Photo'
 
 
-class Reviews(admin.TabularInline):
-    model = models.Review
+class MenuReviewTabularAdmin(admin.TabularInline):
+    model = models.MenuReview
+    extra = 0
 
 
 @admin.register(models.CafeteriaMenu)
 class MenuAdmin(admin.ModelAdmin):
+    list_display = ('menu_name', 'menu_type', 'menu_price', 'menu_discount', 'cafeteria')
     inlines = [
-        Reviews
+        MenuReviewTabularAdmin
     ]

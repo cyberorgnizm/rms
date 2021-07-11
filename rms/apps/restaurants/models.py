@@ -14,6 +14,20 @@ class Cafeteria(models.Model):
     def __str__(self):
         return self.cafeteria_name
 
+
+class CafeteriaReview(models.Model):
+    """Model for managing reviews on cafeterias"""
+
+    reviewer = models.ForeignKey('accounts.Student', on_delete=models.CASCADE)
+    review_id = models.UUIDField(primary_key=True)
+    review_menu = models.ForeignKey('Cafeteria', on_delete=models.CASCADE)
+    review_ratings = models.DecimalField(decimal_places=1, max_digits=5)
+    review_comments = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"REVIEW NO: #{self.review_id}"
+
+
 class CafeteriaMenu(models.Model):
     """Model for managing menus available at campus cafeterias"""
 
@@ -35,13 +49,13 @@ class CafeteriaMenu(models.Model):
     date_modified = models.DateTimeField(auto_now=True)
 
     def __str__(self) -> str:
-        return self.name
+        return self.menu_name
 
     class Meta:
         verbose_name_plural = "Menus"
 
 
-class Review(models.Model):
+class MenuReview(models.Model):
     """Model for managing reviews on cafeterias menus"""
 
     reviewer = models.ForeignKey('accounts.Student', on_delete=models.CASCADE)
