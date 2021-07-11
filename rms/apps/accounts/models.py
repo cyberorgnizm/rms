@@ -44,7 +44,6 @@ class Student(models.Model):
     def __str__(self):
         return f"{self.user}"
 
-
 class Worker(models.Model):
     """Model for managing college cafeterias worker records"""
 

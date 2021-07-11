@@ -10,10 +10,16 @@ class PurchaseOrder(models.Model):
         ('completed',  'Closed Completed'),
     )
 
+    DELIVERY_MODE = (
+        ('pickup', 'Pickup'),
+        ('delivery', 'Delivery'),
+    )
+
     order_id = models.UUIDField(primary_key=True)
     supplier = models.ForeignKey('restaurants.Cafeteria', on_delete=models.CASCADE)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
+    delivery_mode = models.CharField(max_length=255, choices=DELIVERY_MODE)
     delivery_date = models.DateTimeField(blank=True)
     delivery_address = models.TextField()
     requested_by = models.ForeignKey('accounts.Student', related_name="orders", on_delete=models.CASCADE)
@@ -28,13 +34,13 @@ class PurchaseOrder(models.Model):
     def __str__(self):
         return f"ORDER NO: #{self.order_id}"
 
-
 class PurchaseItem(models.Model):
     """Model for managing purchase order items"""
 
     order = models.ForeignKey('orders.PurchaseOrder', on_delete=models.CASCADE)
     item_name = models.CharField(max_length=255)
     item_code = models.UUIDField()
+    is_ready = models.BooleanField(default=False)
     item_quantity = models.IntegerField()
     item_price = models.DecimalField(decimal_places=2, max_digits=5)
     item_discount = models.DecimalField(decimal_places=2, max_digits=5)
@@ -43,7 +49,6 @@ class PurchaseItem(models.Model):
 
     def __str__(self):
         return self.item_name
-
 
 class Invoice(models.Model):
     """Model for managing invoices issued to users"""
