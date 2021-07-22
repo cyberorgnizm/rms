@@ -1,0 +1,54 @@
+{% extends 'pages/base.html'%}
+
+{% block content %}
+<div>
+    <div class="header">
+      {% include 'pages/includes/navbar.html' %}
+    </div>
+    <div class="container">
+        <div class="row mt-5">
+            <div class="col-md-4">
+                <img class="rounded" src="{{object.cafeteria_image.url}}" alt="{{object.cafeteria_name}}" height="200"/>
+            </div>
+            <div class="col-md-7">
+                <h4 class="mb-5"><strong>Name</strong>: {{object.cafeteria_name}}</strong></h4>
+                <h4 class="mb-5"><strong>Email</strong>: {{object.cafeteria_email}}</strong></h4>
+                <h4 class="mb-5"><strong>Manager</strong>: {{object.cafeteria_manager}}</strong></h4>
+                <h4 class="mb-5"><strong>Address</strong>: {{object.cafeteria_address}}</strong></h4>
+            </div>
+        </div>
+        <p class="my-7">Available menus in the cafeteria</p>
+        <div class="row">
+            <div class="col-10">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <!-- <th>Image</th> -->
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Price</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for menu in object.cafeteriamenu_set.all %}    
+                        <tr>
+                            <!-- <td>
+                                <img src="{{menu.menu_image.url}}" alt="{{menu.menu_name}}" height="50"/>
+                            </td> -->
+                            <td scope="row">{{menu.menu_name}}</td>
+                            <td>{{menu.menu_type}}</td>
+                            <td>{{menu.menu_price}}</td>
+                            <td>
+                                <a href="#" class="btn btn-sm btn-outline-secondary w-50">Add</a>
+                                <!-- <a href="#" class="btn btn-sm btn-outline-danger w-50">Remove</a> -->
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

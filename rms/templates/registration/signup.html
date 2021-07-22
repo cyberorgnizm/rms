@@ -1,0 +1,166 @@
+{% extends 'registration/base.html'%} 
+{% block stylesheets %}
+<link
+    href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css"
+    rel="stylesheet"
+/>
+<link href="https://unpkg.com/filepond/dist/filepond.css" rel="stylesheet" />
+<link
+    href="https://unpkg.com/filepond-plugin-image-edit/dist/filepond-plugin-image-edit.css"
+    rel="stylesheet"
+/>
+{% endblock %}
+
+{% block content %}
+<div class="container d-flex flex-column">
+  <div class="row align-items-center justify-content-center g-0 min-vh-100">
+    <div class="col-12 col-md-8 col-lg-6 col-xxl-4 py-8 py-xl-0">
+      <!-- Card -->
+      <div class="card smooth-shadow-md">
+        <!-- Card body -->
+        <div class="card-body p-6">
+          <!-- Form -->
+          <form method="POST">
+            {% csrf_token %}
+            <!-- First and Last name -->
+            <div class="row mb-3">
+              <div class="col-12">{{form.non_field_errors}}</div>
+              <div class="col-6">
+                {{form.first_name.errors}}
+                <label for="{{form.first_name.id_for_label}}" class="form-label"
+                  >First Name</label
+                >
+                {{form.first_name}}
+              </div>
+              <div class="col-6">
+                {{form.last_name.errors}}
+                <label for="{{form.last_name.id_for_label}}" class="form-label"
+                  >Last Name</label
+                >
+                {{form.last_name}}
+              </div>
+            </div>
+            <!-- Username -->
+            <div class="mb-3">
+              {{form.username.errors}}
+              <label for="{{form.username.id_for_label}}" class="form-label"
+                >User Name</label
+              >
+              {{form.username}}
+            </div>
+            <!-- Email -->
+            <div class="mb-3">
+              {{form.email.errors}}
+              <label for="{{form.email.id_for_label}}" class="form-label"
+                >Email</label
+              >
+              {{form.email}}
+            </div>
+            <!-- Password -->
+            <div class="mb-3">
+              {{form.password.errors}}
+              <label for="{{form.password.id_for_label}}" class="form-label">Password</label>
+              {{form.password}}
+            </div>
+            <!-- Password -->
+            <div class="mb-3">
+              {{form.confirm_password.errors}}
+              <label for="{{form.confirm_password.id_for_label}}" class="form-label"
+                >Confirm Password</label
+              >
+              {{form.confirm_password}}
+            </div>
+            <div class="row">
+              <div class="col-8 mb-3">
+                {{form.phone.errors}}
+                <label for="{{form.phone.id_for_label}}" class="form-label"
+                  >Phone</label
+                >
+                {{form.phone}}
+              </div>
+              <div class="col-4 mb-3">
+                {{form.gender.errors}}
+                <label for="{{form.gender.id_for_label}}" class="form-label"
+                  >Gender</label
+                >
+                {{form.gender}}
+              </div>
+            </div>
+            <!-- Checkbox -->
+            <div class="mb-3">
+              <div class="form-check custom-checkbox">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  id="agreeCheck"
+                />
+                <label class="form-check-label" for="agreeCheck"
+                  ><span class="fs-6"
+                    >I agree to the <a href="#">Terms of Service </a>and
+                    <a href="#">Privacy Policy.</a></span
+                  ></label
+                >
+              </div>
+            </div>
+            <div>
+              <!-- Button -->
+              <div class="d-grid">
+                <button type="submit" class="btn btn-primary">
+                  Create Account
+                </button>
+              </div>
+              <div class="d-md-flex justify-content-between mt-4">
+                <div class="mb-2 mb-md-0">
+                  <a href="{% url 'accounts:login' %}" class="fs-7"
+                    >Already member? Login
+                  </a>
+                </div>
+                <div>
+                  <a href="{% url 'password_reset' %}" class="text-inherit fs-7"
+                    >Forgot your password?</a
+                  >
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block scripts %}
+<script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
+<script src="https://unpkg.com/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.js"></script>
+<script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
+<script src="https://unpkg.com/filepond-plugin-image-crop/dist/filepond-plugin-image-crop.js"></script>
+<script src="https://unpkg.com/filepond-plugin-image-resize/dist/filepond-plugin-image-resize.js"></script>
+<script src="https://unpkg.com/filepond-plugin-image-transform/dist/filepond-plugin-image-transform.js"></script>
+<script src="https://unpkg.com/filepond-plugin-image-edit/dist/filepond-plugin-image-edit.js"></script>
+<script src="https://unpkg.com/filepond/dist/filepond.js"></script>
+<script type="text/javascript">
+  FilePond.registerPlugin(
+    FilePondPluginFileValidateType,
+    FilePondPluginImageExifOrientation,
+    FilePondPluginImagePreview,
+    FilePondPluginImageCrop,
+    FilePondPluginImageResize,
+    FilePondPluginImageTransform,
+    FilePondPluginImageEdit
+  );
+
+  // Select the file input and use
+  // create() to turn it into a pond
+  FilePond.create(document.querySelector(".filepond"), {
+    labelIdle: `Drag & Drop your picture or <span class="filepond--label-action">Browse</span>`,
+    imagePreviewHeight: 170,
+    imageCropAspectRatio: "1:1",
+    imageResizeTargetWidth: 200,
+    imageResizeTargetHeight: 200,
+    stylePanelLayout: "compact circle",
+    styleLoadIndicatorPosition: "center bottom",
+    styleProgressIndicatorPosition: "right bottom",
+    styleButtonRemoveItemPosition: "left bottom",
+    styleButtonProcessItemPosition: "right bottom",
+  });
+</script>
+{% endblock %}

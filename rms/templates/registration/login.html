@@ -1,9 +1,61 @@
 {% extends 'registration/base.html'%}
 
-{% block main %}
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">SignIn</button>
-    </form>
+{% block content %}
+    <div class="container d-flex flex-column">
+        <div class="row align-items-center justify-content-center g-0
+        min-vh-100">
+        <div class="col-12 col-md-8 col-lg-6 col-xxl-4 py-8 py-xl-0">
+            <!-- Card -->
+            <div class="card smooth-shadow-md">
+                <!-- Card body -->
+                <div class="card-body p-6">    
+                <!-- Form -->
+                <form method="POST">
+                  {% csrf_token %}
+                  <!-- Username -->
+                  <div class="mb-3">
+                    <label for="id_email" class="form-label">{{form.username.label}}</label>
+                    {{form.username}}
+                  </div>
+                  <!-- Password -->
+                  <div class="mb-3">
+                    <label for="id_password" class="form-label">{{form.password.label}}</label>
+                    {{form.password}}
+                  </div>
+                  <!-- Checkbox -->
+                  <div class="d-lg-flex justify-content-between align-items-center
+                      mb-4">
+                    <div class="form-check custom-checkbox">
+                      {{form.remember_me}}
+                      <label class="form-check-label" for="id_remember_me">Remember
+                          me</label>
+                    </div>
+    
+                  </div>
+                  <div>
+                    <!-- Button -->
+                    <div class="d-grid">
+                      <button type="submit" class="btn btn-primary">Sign
+                        in</button>
+                    </div>
+    
+                    <div class="d-md-flex justify-content-between mt-4">
+                      <small class="mb-2 mb-md-0">
+                        Create an 
+                        <a href="{% url 'accounts:signup' %}" class="fs-7">Account</a> today for free 
+                      </small>
+                      <small class="fs-7">
+                        <a href="{% url 'password_reset' %}" class="text-inherit">Forgot your password?</a>
+                      </small>
+    
+                    </div>
+                  </div>
+    
+    
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 {% endblock %}

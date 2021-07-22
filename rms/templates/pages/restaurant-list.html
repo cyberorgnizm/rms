@@ -1,0 +1,50 @@
+{% extends 'pages/base.html'%}
+
+{% block content %}
+<div>
+  <!-- Page content -->
+  <div>
+    <div class="header">
+      {% include 'pages/includes/navbar.html' %}
+    </div>
+    <table class="table table-striped table-inverse table-responsive">
+        <thead class="thead-inverse">
+            <tr>
+                <th>ID</th>
+                <th>Cafeteria</th>
+                <th>Manager</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for cafeteria in object_list %}
+                <tr>
+                    <td scope="row">{{cafeteria.id}}</td>
+                    <td>
+                        <div class="row">
+                            <div class="col-3">
+                                <a href="{% url 'restaurants:cafeteria-detail' cafeteria.cafeteria_slug %}"><img src="{{cafeteria.cafeteria_image.url}}" alt="{{cafeteria}} photo" class="rounded" height="140" /></a>
+                            </div>
+                            <div class="col-6">
+                                <p>Name: {{cafeteria}}</p>
+                                <p>Email: {{cafeteria.cafeteria_email}}</p>
+                                <p>Working Hours: {{cafeteria.cafeteria_work_hours}}</p>
+                                <p>Address: {{cafeteria.cafeteria_address}}</p>
+                            </div>
+                        </div> 
+                    </td>
+                    <td>
+                        <div class="text-center mt-8">
+                            <div class="avatar avatar-lg avatar-indicators avatar-online">
+                                <img src="{{cafeteria.cafeteria_manager.user.avatar.url}}" class="rounded-circle" />
+                            </div>
+                            <p>{{cafeteria.cafeteria_manager.user}}</p>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+    </table>
+  </div>
+  {% include 'pages/includes/footer.html' %}
+</div
+{% endblock %}>
