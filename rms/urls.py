@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.utils.translation import gettext_lazy
 from django.conf import settings
+from django.views.generic.base import TemplateView
 
 
 admin.site.site_title = gettext_lazy("RMS site admin")
@@ -25,9 +26,11 @@ admin.site.enable_nav_sidebar = False
 admin.site.empty_value_display = "N/A"
 
 urlpatterns = [
-    path("", include('rms.apps.pages.urls')),
-    path("accounts/", include("django.contrib.auth.urls")),
+    path('', TemplateView.as_view(template_name="pages/index.html"), name='home'),
+    path('about', TemplateView.as_view(template_name="pages/about.html"), name='about'),
     path("accounts/", include("rms.apps.accounts.urls")),
+    path("accounts/", include("django.contrib.auth.urls")),
+    path("restaurants/", include("rms.apps.restaurants.urls")),
     path('admin/', admin.site.urls),
 ]
 
