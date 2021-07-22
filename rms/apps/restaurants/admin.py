@@ -27,9 +27,9 @@ class MenuReviewTabularAdmin(admin.TabularInline):
     extra = 0
 
 
-@admin.register(models.CafeteriaMenu)
+@admin.register(models.Menu)
 class MenuAdmin(admin.ModelAdmin):
-    list_display = ('menu_name', 'menu_type', 'menu_price', 'menu_discount', 'cafeteria')
+    list_display = ('name', 'menu_type', 'price', 'cafeteria')
     inlines = [
         MenuReviewTabularAdmin
     ]

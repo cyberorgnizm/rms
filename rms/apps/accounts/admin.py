@@ -9,7 +9,7 @@ from . import models
 class UserAdmin(AbstractUserAdmin):
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
-        (_('Personal info'), {'fields': ('first_name', 'last_name', 'email', 'avatar',)}),
+        (_('Personal info'), {'fields': ('first_name', 'last_name', 'email', 'avatar', 'bio',)}),
         (_('Permissions'), {
             'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
         }),
@@ -25,7 +25,7 @@ class UserAdmin(AbstractUserAdmin):
 
 @admin.register(models.Student)
 class StudentAdmin(admin.ModelAdmin):
-    list_display = ('user', 'student_matric', 'student_gender', 'student_level')
+    list_display = ('user', 'matric', 'gender', 'level')
 
 
 @admin.register(models.Worker)
