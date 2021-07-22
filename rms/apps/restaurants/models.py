@@ -1,34 +1,39 @@
 from django.db import models
-from django.contrib.auth import get_user_model
+from django.utils.text import slugify
+from django.conf import settings
 
 class Cafeteria(models.Model):
     """Model for managing cafeterias within college campus"""
 
-    cafeteria_name = models.CharField(max_length=255)
-    cafeteria_email = models.EmailField(blank=True, null=True)
-    cafeteria_image = models.ImageField(upload_to="cafeterias")
-    cafeteria_manager = models.ForeignKey('accounts.Worker', on_delete=models.SET_NULL, null=True)
-    cafeteria_address = models.TextField()
-    cafeteria_work_hours = models.DurationField()
+    name = models.CharField(max_length=255)
+    slug = models.SlugField(null=True, blank=True)
+    email = models.EmailField(blank=True, null=True)
+    image = models.ImageField(upload_to=f"{settings.MEDIA_ROOT}cafeterias")
+    manager = models.ForeignKey('accounts.Worker', on_delete=models.SET_NULL, null=True, blank=True)
+    address = models.TextField()
+    opening_hour = models.TimeField(blank=True, null=True)
+    closing_hour = models.TimeField(blank=True, null=True)
 
     def __str__(self):
-        return self.cafeteria_name
+        return self.name
 
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        return super().save(*args, **kwargs)
 
 class CafeteriaReview(models.Model):
     """Model for managing reviews on cafeterias"""
 
+    cafeteria = models.ForeignKey('Cafeteria', on_delete=models.CASCADE)
     reviewer = models.ForeignKey('accounts.Student', on_delete=models.CASCADE)
-    review_id = models.UUIDField(primary_key=True)
-    review_menu = models.ForeignKey('Cafeteria', on_delete=models.CASCADE)
-    review_ratings = models.DecimalField(decimal_places=1, max_digits=5)
-    review_comments = models.TextField(blank=True, null=True)
+    rating = models.DecimalField(default=0.0, decimal_places=1, max_digits=3, null=True, blank=True)
+    comment = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return f"REVIEW NO: #{self.review_id}"
+        return f"REVIEW NO: #{self.id}"
 
 
-class CafeteriaMenu(models.Model):
+class Menu(models.Model):
     """Model for managing menus available at campus cafeterias"""
 
     MENU_TYPES = (
@@ -37,19 +42,18 @@ class CafeteriaMenu(models.Model):
         ('snack', 'Snack'),
     )
 
-    cafeteria = models.ForeignKey('Cafeteria', on_delete=models.CASCADE)
-    menu_name = models.CharField(max_length=255)
-    menu_image = models.ImageField(upload_to="products")
-    menu_description = models.TextField()
-    menu_slug = models.SlugField(blank=True, unique=True)
+    cafeteria = models.ForeignKey('Cafeteria', related_name="menus", on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    image = models.ImageField(upload_to=f"{settings.MEDIA_ROOT}products")
+    description = models.TextField()
+    slug = models.SlugField(blank=True, unique=True)
     menu_type = models.CharField(max_length=255, choices=MENU_TYPES)
-    menu_price = models.DecimalField(decimal_places=2, max_digits=5)
-    menu_discount = models.DecimalField(decimal_places=2, default=0.00, max_digits=5)
+    price = models.DecimalField(decimal_places=2, max_digits=5)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
 
     def __str__(self) -> str:
-        return self.menu_name
+        return self.name
 
     class Meta:
         verbose_name_plural = "Menus"
@@ -59,10 +63,9 @@ class MenuReview(models.Model):
     """Model for managing reviews on cafeterias menus"""
 
     reviewer = models.ForeignKey('accounts.Student', on_delete=models.CASCADE)
-    review_id = models.UUIDField(primary_key=True)
-    review_menu = models.ForeignKey('CafeteriaMenu', on_delete=models.CASCADE)
-    review_ratings = models.DecimalField(decimal_places=1, max_digits=5)
-    review_comments = models.TextField(blank=True, null=True)
+    menu = models.ForeignKey('Menu', on_delete=models.CASCADE)
+    rating = models.DecimalField(default=0.0, decimal_places=1, max_digits=3, null=True, blank=True)
+    comment = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return f"REVIEW NO: #{self.review_id}"
+        return f"REVIEW NO: #{self.id}"

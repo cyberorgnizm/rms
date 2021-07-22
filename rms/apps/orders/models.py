@@ -15,18 +15,18 @@ class PurchaseOrder(models.Model):
         ('delivery', 'Delivery'),
     )
 
-    order_id = models.UUIDField(primary_key=True)
-    supplier = models.ForeignKey('restaurants.Cafeteria', on_delete=models.CASCADE)
+    order_id = models.UUIDField(unique=True)
+    cafeteria = models.ForeignKey('restaurants.Cafeteria', on_delete=models.CASCADE)
+    student = models.ForeignKey('accounts.Student', related_name="orders", on_delete=models.CASCADE)
+    approved_by_worker = models.ForeignKey('accounts.Worker', related_name="orders", on_delete=models.CASCADE)
+    status = models.CharField(max_length=255, choices=ORDER_STATUS)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
     delivery_mode = models.CharField(max_length=255, choices=DELIVERY_MODE)
     delivery_date = models.DateTimeField(blank=True)
     delivery_address = models.TextField()
-    requested_by = models.ForeignKey('accounts.Student', related_name="orders", on_delete=models.CASCADE)
-    approved_by = models.ForeignKey('accounts.Worker', related_name="orders", on_delete=models.CASCADE)
     notes = models.TextField()
-    status = models.CharField(max_length=255, choices=ORDER_STATUS)
-    total_price = models.DecimalField(decimal_places=2, max_digits=5)
+    total_price = models.DecimalField(decimal_places=2, max_digits=10, default=0.00)
 
     class Meta:
         verbose_name_plural = "Orders"
@@ -34,33 +34,29 @@ class PurchaseOrder(models.Model):
     def __str__(self):
         return f"ORDER NO: #{self.order_id}"
 
-class PurchaseItem(models.Model):
+class PurchaseLine(models.Model):
     """Model for managing purchase order items"""
 
-    order = models.ForeignKey('orders.PurchaseOrder', on_delete=models.CASCADE)
-    item_name = models.CharField(max_length=255)
-    item_code = models.UUIDField()
+    order = models.ForeignKey('orders.PurchaseOrder', related_name="lines", on_delete=models.CASCADE)
+    menu = models.ForeignKey('restaurants.Menu', related_name="purchase_lines", on_delete=models.CASCADE)
+    quantity = models.IntegerField()
     is_ready = models.BooleanField(default=False)
-    item_quantity = models.IntegerField()
-    item_price = models.DecimalField(decimal_places=2, max_digits=5)
-    item_discount = models.DecimalField(decimal_places=2, max_digits=5)
     total_price = models.DecimalField(decimal_places=2, max_digits=5)
 
 
     def __str__(self):
-        return self.item_name
+        return self.menu.name
 
 class Invoice(models.Model):
     """Model for managing invoices issued to users"""
 
-    purchase_order = models.ForeignKey('orders.PurchaseOrder', on_delete=models.CASCADE)
-    purchaser = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    vendor = models.ForeignKey('restaurants.Cafeteria', on_delete=models.CASCADE)
-    invoice_id = models.UUIDField(primary_key=True)
-    invoice_date = models.DateTimeField(auto_now_add=True)
+    invoice_id = models.UUIDField(unique=True)
+    order = models.ForeignKey('orders.PurchaseOrder', on_delete=models.CASCADE)
+    cafeteria = models.ForeignKey('restaurants.Cafeteria', on_delete=models.CASCADE)
+    student = models.ForeignKey('accounts.Student', on_delete=models.CASCADE)
+    date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
     due_date = models.DateTimeField()
-    reference_id = models.CharField(max_length=255)
 
     def __str__(self):
         return f"INVOICE NO: #{self.invoice_id}"
