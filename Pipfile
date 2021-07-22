@@ -7,8 +7,12 @@ name = "pypi"
 django = "*"
 django-shopping-cart = "*"
 pillow = "*"
+psycopg2 = "*"
 
 [dev-packages]
 
 [requires]
 python_version = "3.8"
+
+[packages.django-phonenumber-field]
+extras = [ "phonenumbers",]
