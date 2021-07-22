@@ -58,6 +58,10 @@ class Menu(models.Model):
     class Meta:
         verbose_name_plural = "Menus"
 
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        return super().save(*args, **kwargs)
+
 
 class MenuReview(models.Model):
     """Model for managing reviews on cafeterias menus"""
