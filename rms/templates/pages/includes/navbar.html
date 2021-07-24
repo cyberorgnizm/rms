@@ -1,4 +1,6 @@
 {% load static %}
+{% load cart_tag %}
+
 <nav class="navbar-classic navbar navbar-expand-lg">
   <a class="navbar-brand" href="{% url 'home' %}"><img src="{% static 'images/brand/logo/brand-logo.png' %}" alt="..." /></a>
   <button
@@ -132,11 +134,11 @@
         aria-haspopup="true"
         aria-expanded="false"
       >
-        <i class="icon-xs" data-feather="shopping-cart"></i>
-      </a>
+      <i class="icon-xs" data-feather="shopping-cart"></i>
+    </a>
       <div
-        class="dropdown-menu dropdown-menu-lg dropdown-menu-end"
-        aria-labelledby="dropdownCart"
+      class="dropdown-menu dropdown-menu-lg dropdown-menu-end"
+      aria-labelledby="dropdownCart"
       >
         <div class="">
           <div
@@ -154,19 +156,34 @@
           </div>
           <!-- List group -->
           <ul class="list-group list-group-flush notification-list-scroll">
-            <!-- List group item -->
-            <li class="list-group-item bg-light">
-              <a href="#" class="text-muted">
-                <h5 class="fw-bold mb-1">Rishi Chopra</h5>
-                <p class="mb-0">
-                  Mauris blandit erat id nunc blandit, ac eleifend dolor
-                  pretium.
-                </p>
-              </a>
-            </li>
+            {% for key,value in request.session.cart.items %}
+              <!-- List group item -->
+              <li class="list-group-item bg-light">
+                <span href="#" class="text-muted">
+                  <div class="row align-items-center">
+                    <div class="col-6">
+                      <h5 class="fw-bold mb-1">{{value.name}}</h5>
+                      <h6 class="mb-1">Price: {{value.price}}</h6>
+                      <h6 class="mb-1">Quantity: {{value.quantity}}</h6>
+                      <p class="mb-0">
+                        <strong class="fw-bold">Total: {{ value.price|multiply:value.quantity }}</strong>
+                      </p>
+                    </div>
+                    <div class="col-4 text-center">
+                      {% if value.image %}
+                        <img src="{{value.image}}"  class="d-inline-block avatar avatar-lg rounded-circle mr-4" alt="{{value.name}}" />
+                      {% endif %}
+                    </div>
+                    <div class="col-2">
+                      <a href="{% url 'orders:item_clear' value.product_id %}"><i class="icon-xs" data-feather="trash"></i></a>
+                    </div>
+                  </div>
+                </span>
+              </li>
+            {% endfor %}
           </ul>
           <div class="border-top px-3 py-2 text-center">
-            <a href="#" class="text-inherit fw-semi-bold">
+            <a href="{% url 'orders:cart_detail' %}" class="text-inherit fw-semi-bold">
               View all Items in Cart
             </a>
           </div>
