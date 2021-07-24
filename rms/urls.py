@@ -31,6 +31,7 @@ urlpatterns = [
     path("accounts/", include("rms.apps.accounts.urls")),
     path("accounts/", include("django.contrib.auth.urls")),
     path("restaurants/", include("rms.apps.restaurants.urls")),
+    path('cart/', include("rms.apps.orders.urls")),
     path('admin/', admin.site.urls),
 ]
 

@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from phonenumber_field.modelfields import PhoneNumberField
@@ -71,8 +72,14 @@ class Worker(models.Model):
     )
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    worker_id = models.UUIDField(unique=True)
+    worker_id = models.UUIDField(unique=True, blank=True)
     worker_role = models.CharField(max_length=255, choices=WORKER_ROLES, blank=True)
 
     def __str__(self):
         return f"{self.user} ({self.worker_role})"
+
+    def save(self, *args, **kwargs):
+        if not self.worker_id:
+            self.worker_id = uuid.uuid4()
+        return super().save(*args, **kwargs)
+        

@@ -23,6 +23,11 @@ class UserAdmin(AbstractUserAdmin):
     )
 
 
+@admin.register(models.Department)
+class DepartmentAdmin(admin.ModelAdmin):
+    pass
+
+
 @admin.register(models.Student)
 class StudentAdmin(admin.ModelAdmin):
     list_display = ('user', 'matric', 'gender', 'level')
