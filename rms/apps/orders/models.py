@@ -18,14 +18,14 @@ class PurchaseOrder(models.Model):
     order_id = models.UUIDField(unique=True)
     cafeteria = models.ForeignKey('restaurants.Cafeteria', on_delete=models.CASCADE)
     student = models.ForeignKey('accounts.Student', related_name="orders", on_delete=models.CASCADE)
-    approved_by_worker = models.ForeignKey('accounts.Worker', related_name="orders", on_delete=models.CASCADE)
+    approved_by_worker = models.ForeignKey('accounts.Worker', null=True, blank=True, related_name="orders", on_delete=models.CASCADE)
     status = models.CharField(max_length=255, choices=ORDER_STATUS)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
     delivery_mode = models.CharField(max_length=255, choices=DELIVERY_MODE)
-    delivery_date = models.DateTimeField(blank=True)
+    delivery_date = models.DateTimeField(blank=True, null=True)
     delivery_address = models.TextField()
-    notes = models.TextField()
+    notes = models.TextField(blank=True, null=True)
     total_price = models.DecimalField(decimal_places=2, max_digits=10, default=0.00)
 
     class Meta:
