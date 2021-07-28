@@ -38,44 +38,44 @@
             <div class="card-body">
               <div class=" mb-6">
                 <h4 class="mb-1">General Settings</h4>
-
               </div>
-              {% if user.avatar %}
-              <div class="row align-items-center mb-8">
-                <div class="col-md-3 mb-3 mb-md-0">
-                  <h5 class="mb-0">Avatar</h5>
-                </div>
-                <div class="col-md-9">
-                  <div class="d-flex align-items-center">
-                    <div class="me-3">
-                      <img src="{{user.avatar.url}}" class="rounded-circle avatar avatar-lg" alt="">
-                    </div>
-                    <div>
-                      <button type="submit" class="btn btn-sm btn-outline-white
-                          me-1">Change</button>
-                      <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+              <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% if user.avatar %}
+                <div class="row align-items-center mb-8">
+                  <div class="col-md-3">
+                    <h5 class="mb-0">Photo</h5>
+                  </div>
+                  <div class="col-md-9">
+                    <div class="d-flex justify-content-center align-items-center">
+                      <div class="me-3">
+                        <img src="{{user.avatar.url}}" id="profile-photo" class="rounded-circle avatar avatar-upload img-thumbnail" alt="{{user.username}}">
+                      </div>
+                      <div class="me-3">
+                        <button disabled type="submit" class="btn btn-sm btn-outline-primary
+                            me-1">Change</button>
+                        <button disabled type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              {% endif %}
+                {% else %}
+                  {% include 'registration/includes/avatar_upload.html'%}                
+                {% endif %}
               <div>
                 <!-- border -->
                 <div class="mb-6">
                   <h4 class="mb-1">Basic information</h4>
-
                 </div>
-                <form method="POST">
-                  {% csrf_token %}
                   <!-- row -->
                   <div class="mb-3 row">
                     <label for="fullName" class="col-sm-4 col-form-label
                         form-label">Full name</label>
                     <div class="col-sm-4 mb-3 mb-lg-0">
-                      <input type="text" class="form-control" value="{{user.first_name}}" placeholder="First name" id="fullName" required>
+                      <input type="text" name="first_name" class="form-control" value="{{user.first_name}}" placeholder="First name" id="fullName" required>
                     </div>
                     <div class="col-sm-4">
-                      <input type="text" class="form-control" value="{{user.last_name}}" placeholder="Last name" id="lastName" required>
+                      <input type="text" name="last_name" class="form-control" value="{{user.last_name}}" placeholder="Last name" id="lastName" required>
                     </div>
                   </div>
 
@@ -92,7 +92,7 @@
                     <label for="phone" class="col-sm-4 col-form-label
                         form-label">Phone <span class="text-muted">(Optional)</span></label>
                     <div class="col-md-8 col-12">
-                      <input type="text" class="form-control" value="{{user.phone}}" placeholder="Phone" id="phone" required>
+                      <input type="text" name="phone" class="form-control" value="{{user.phone}}" placeholder="Phone" id="phone" required>
                     </div>
                   </div>
                   <!-- row -->
@@ -100,10 +100,8 @@
                   <div class="mb-3 row">
                     <label for="addressLine" class="col-sm-4 col-form-label
                         form-label">Address</label>
-
-
                     <div class="col-md-8 col-12">
-                      <input type="text" class="form-control" value="{{user.first_name}}" placeholder="placeholder" id="addressLine" required>
+                      <input type="text" name="address" class="form-control" value="{{user.student.student_address}}" placeholder="placeholder" id="addressLine" required>
                     </div>
                   </div>
                   {% endif %}
