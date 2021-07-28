@@ -2,6 +2,15 @@ from django.db import models
 from django.utils.text import slugify
 from django.conf import settings
 
+
+RATING_CHOICES = (
+    (1, 'terrible'),
+    (2, 'poor'),
+    (3, 'good'),
+    (4, 'very good'),
+    (5, 'excellent')
+)
+
 class Cafeteria(models.Model):
     """Model for managing cafeterias within college campus"""
 
@@ -26,7 +35,7 @@ class CafeteriaReview(models.Model):
 
     cafeteria = models.ForeignKey('Cafeteria', on_delete=models.CASCADE)
     reviewer = models.ForeignKey('accounts.Student', on_delete=models.CASCADE)
-    rating = models.DecimalField(default=0.0, decimal_places=1, max_digits=3, null=True, blank=True)
+    rating = models.IntegerField(choices=RATING_CHOICES, null=True, blank=True)
     comment = models.TextField(blank=True, null=True)
 
     def __str__(self):
@@ -68,7 +77,7 @@ class MenuReview(models.Model):
 
     reviewer = models.ForeignKey('accounts.Student', on_delete=models.CASCADE)
     menu = models.ForeignKey('Menu', on_delete=models.CASCADE)
-    rating = models.DecimalField(default=0.0, decimal_places=1, max_digits=3, null=True, blank=True)
+    rating = models.IntegerField(choices=RATING_CHOICES, null=True, blank=True)
     comment = models.TextField(blank=True, null=True)
 
     def __str__(self):

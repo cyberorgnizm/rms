@@ -2,9 +2,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.views import LoginView as BaseLoginView
 from django.db import transaction
-from django.http import response
+from django.http import HttpResponseForbidden, HttpResponseRedirect, HttpResponse
 from django.views import generic
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from . import forms, models
 
 
@@ -53,9 +53,24 @@ class ProfileView(LoginRequiredMixin, generic.DetailView):
 
 class EditProfileView(generic.TemplateView):
     template_name = "registration/profile_settings.html"
+    model = get_user_model()
 
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['worker'] = get_user_model().objects.all()
+
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return HttpResponseForbidden()
+        # check image upload
+        upload = request.FILES.get('filepond', None)
+        if upload:
+            user = get_user_model().objects.get(username=request.user.username)
+            user.avatar = upload
+            user.save()
+            return HttpResponse({"message": "success"})
+            
+        return HttpResponseRedirect(reverse('accounts:profile', kwargs={'username': self.request.user.username}))
 
