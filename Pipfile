@@ -10,6 +10,7 @@ pillow = "*"
 psycopg2 = "*"
 gunicorn = "*"
 django-heroku = "*"
+whitenoise = "*"
 
 [dev-packages]
 
