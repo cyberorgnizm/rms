@@ -1,1 +1,41 @@
-{% extends 'pages/base.html' %}
+{% extends 'pages/base.html'%}
+
+{% load static %}
+
+{% block content %}
+<div>
+    <!-- Page content -->
+    <div>
+        <div class="header">
+            {% include 'pages/includes/navbar.html' %}
+        </div>
+        <!-- description section -->
+        <section class="page-section mt-10 mb-10" id="services">
+            <div class="text-center">
+                <h3 class="section-heading text-uppercase mt-5">About Us</h3>
+                <img src="{% static 'images/brand/logo/brand-logo.png' %}" alt="...">
+            </div>
+            <div class="container">
+                <div class="row text-center">
+                    <div class="col-md-6">
+                        <h4 class="my-3 text-uppercase">Our Mission</h4>
+                        <p class="text-muted">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Maiores culpa qui laborum, adipisci, nulla quidem ducimus sequi voluptatibus optio error, labore minus ex commodi ut quaerat nihil. Iste, corporis? Alias.</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h4 class="my-3 text-uppercase">Our Essence</h4>
+                        <p class="text-muted">Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum est molestiae molestias dolores incidunt vel eaque libero repudiandae ea, animi dolore aspernatur enim ipsum accusantium culpa porro odio quibusdam quod.</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h4 class="my-3 text-uppercase">Our Promise</h4>
+                        <p class="text-muted">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Maiores culpa qui laborum, adipisci, nulla quidem ducimus sequi voluptatibus optio error, labore minus ex commodi ut quaerat nihil. Iste, corporis? Alias.</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h4 class="my-3 text-uppercase">Our Vibe</h4>
+                        <p class="text-muted">Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum est molestiae molestias dolores incidunt vel eaque libero repudiandae ea, animi dolore aspernatur enim ipsum accusantium culpa porro odio quibusdam quod.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    {% include 'pages/includes/footer.html' %}
+</div {% endblock %}>
