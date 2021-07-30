@@ -41,7 +41,7 @@ class PurchaseLine(models.Model):
     menu = models.ForeignKey('restaurants.Menu', related_name="purchase_lines", on_delete=models.CASCADE)
     quantity = models.IntegerField()
     is_ready = models.BooleanField(default=False)
-    total_price = models.DecimalField(decimal_places=2, max_digits=5)
+    total_price = models.DecimalField(decimal_places=2, max_digits=10)
 
 
     def __str__(self):

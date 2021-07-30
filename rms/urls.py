@@ -18,6 +18,7 @@ from django.urls import path, include
 from django.utils.translation import gettext_lazy
 from django.conf import settings
 from django.views.generic.base import TemplateView
+from rms.apps.orders import views as order_views
 
 
 admin.site.site_title = gettext_lazy("RMS site admin")
@@ -32,6 +33,8 @@ urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),
     path("restaurants/", include("rms.apps.restaurants.urls")),
     path('cart/', include("rms.apps.orders.urls")),
+    path('orders/', order_views.PurchaseOrderListView.as_view(), name="purchases"),
+    path('orders/<uuid:id>/', order_views.PurchaseOrderDetailView.as_view(), name="purchase_detail"),
     path('admin/', admin.site.urls),
 ]
 

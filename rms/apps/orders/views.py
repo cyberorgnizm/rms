@@ -7,6 +7,7 @@ from django.db.models.expressions import F
 from django.contrib.auth.decorators import login_required
 from cart.cart import Cart
 from .models import PurchaseOrder, PurchaseLine
+from rms.apps.accounts.models import Student
 from rms.apps.restaurants.models import Cafeteria, Menu
 
 
@@ -36,7 +37,6 @@ class CheckoutPurchasesView(generic.TemplateView):
                         student=request.user.student,
                         status='pending',
                         delivery_mode='pickup',
-                        delivery_date=timezone.now(),
                         delivery_address=request.user.student.student_address
                     )
                     cafeteria_set.add(cafeteria)
@@ -48,17 +48,24 @@ class CheckoutPurchasesView(generic.TemplateView):
                 # filter order where menu cafeteria matches
                 orders = [order for order in order_set if order.cafeteria == menu.cafeteria]
                 if orders:
-                    PurchaseLine.objects.create(
-                        order=orders[0],
+                    purchase_order = orders[0]
+                    line = PurchaseLine.objects.create(
+                        order=purchase_order,
                         menu=menu,
                         quantity=quantity,
                         total_price=menu.price * quantity
                     )
+                    # update total price for order after total price for line item is calculated
+                    purchase_order.total_price += float(line.total_price)
+                    purchase_order.save()
 
         except Exception as exp:
+            print(exp)
             # TODO: handle exception when performing above computations
             return redirect(request.get_raw_uri())
         else:
+            cart = Cart(request)
+            cart.clear()
             return redirect("orders:cart_detail")
 
     def get(self, request, *args, **kwargs):
@@ -70,14 +77,44 @@ class CheckoutPurchasesView(generic.TemplateView):
         return context
 
 
+class PurchaseOrderListView(generic.ListView):
+    model = PurchaseOrder
+    template_name = "order/purchases_list.html"
+    context_object_name = "orders"
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.request.user.is_student:
+            student = Student.objects.get(user=self.request.user)
+            queryset = queryset.filter(student=student)
+            return queryset
+        elif self.request.user.is_worker:
+            return queryset
+        return queryset
+
+
 class PurchaseOrderDetailView(generic.DetailView):
-    pass
+    model = PurchaseOrder
+    slug_field = "order_id"
+    slug_url_kwarg = "id"
+    template_name = "order/purchase_detail.html"
+    context_object_name = "order"
+    
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.request.user.is_student:
+            student = Student.objects.get(user=self.request.user)
+            queryset = queryset.filter(student=student)
+            return queryset
+        elif self.request.user.is_worker:
+            return queryset
+        return queryset
+
 
 class PurchaseOrderUpdateView(generic.UpdateView):
     pass
 
-class PurchaseOrderListView(generic.ListView):
-    pass
 
 
 # ------------------------------------------------------------------------

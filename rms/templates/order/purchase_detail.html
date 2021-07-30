@@ -1,0 +1,57 @@
+{% extends 'cart/base.html' %} {% load cart_tag %} {% block main %}
+<div class="container">
+  {% if object %}
+  <h3 class="fw-bold text-uppercase mt-5">Order ID: {{order.order_id}}</h3>
+  <span class="fw-bold d-block text-uppercase mt-2">Status: {{order.status}}</span>
+  <span class="fw-bold d-block text-uppercase mt-2">Cafeteria: {{order.cafeteria}}</span>
+  {% if order.delivery_date %}
+  <span class="fw-bold d-block text-uppercase mt-2">Delivery Date: {{order.delivery_date}}</span>
+  {% endif %}
+  <span class="fw-bold d-block text-uppercase mt-2">Delivery Mode: {{order.delivery_mode}}</span>
+  <span class="fw-bold d-block text-uppercase mt-2">Delivery Address: {{order.delivery_address}}</span>
+  <span class="fw-bold d-block text-uppercase mt-2">Line Count: {{order.lines.count}}</span>
+  <span class="fw-bold d-block text-uppercase mt-2">Total Price: {{order.total_price}}</span>
+  <table class="table text-nowrap mb-5 mt-5">
+    <thead class="table-light">
+      <tr>
+        <th>Menu</th>
+        <th>Quantity</th>
+        <th>Total Price</th>
+        <th>Ready?</th>
+        {% if user.is_worker %}
+        <th></th>
+        {% endif %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for line in order.lines.all %}
+      <tr>
+        <td class="align-middle">
+          <a href="{% url 'restaurants:cafeteria-detail' line.menu.cafeteria.slug %}">
+            <img src="{{line.menu.image.url}}" alt="" class="avatar rounded me-3" style="object-fit: cover"> <span>{{line.menu}}</span>
+          </a>
+        </td>
+        <td class="align-middle">{{line.quantity}}</td>
+        <td class="align-middle">{{line.total_price}}</td>
+        <td class="align-middle text-dark">
+          {{line.is_ready}}
+        </td>
+        <!-- <td>
+          {% if not line.is_ready %}
+          <a href="#" class="btn btn-sm btn-outline-primary">Mark as Ready</a>
+          {% else %}
+          <a href="#" class="btn btn-sm btn-outline-secondary">Mark as not Ready</a>
+          {% endif %}
+        </td> -->
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="text-center mt-10">
+    <i class="icon-xxl" data-feather="shopping-cart"></i>
+    <p class="mt-5">You have 0 items in your cart, please add items before you checkout</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'cart/base.html' %} {% load cart_tag %} {% block main %}
+<div class="container">
+  <h2 class="fw-bold text-uppercase mt-5">Orders</h2>
+  <p>Below are your most recent orders</p>
+  <p>You currently have <strong>{{request.session.cart.items|length}}</strong> orders</p>
+  {% if object_list and request.user.is_student %}
+  <table class="table text-nowrap mb-5 mt-5">
+    <thead class="table-light">
+      <tr>
+        <th>Order ID</th>
+        <th>Cafeteria</th>
+        <th>Delivery Date</th>
+        <th>Status</th>
+        <th>Total Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for order in orders %}
+      <tr>
+        <td class="align-middle">
+            <a href="{% url 'purchase_detail' order.order_id %}">{{order.order_id}}</a>
+        </td>
+        <td class="align-middle">
+          {{order.cafeteria}}
+        </td>
+        <td class="align-middle">
+          {% if order.delivery_date %}
+            {{order.delivery_date}}
+          {% else %}
+            N/A
+          {% endif %}
+          </td>
+        <td class="align-middle">{{order.status}}</td>
+        <td class="align-middle text-dark">
+          {{order.total_price}}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="text-center mt-10">
+    <i class="icon-xxl" data-feather="shopping-cart"></i>
+    <p class="mt-5">You have 0 items in your cart, please add items before you checkout</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
