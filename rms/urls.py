@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.utils.translation import gettext_lazy
 from django.conf import settings
-from django.views.generic.base import TemplateView
+from .views import HomeView, AboutView
 from rms.apps.orders import views as order_views
 
 
@@ -27,8 +27,8 @@ admin.site.enable_nav_sidebar = False
 admin.site.empty_value_display = "N/A"
 
 urlpatterns = [
-    path('', TemplateView.as_view(template_name="pages/index.html"), name='home'),
-    path('about', TemplateView.as_view(template_name="pages/about.html"), name='about'),
+    path('', HomeView.as_view(), name='home'),
+    path('about', AboutView.as_view(), name='about'),
     path("accounts/", include("rms.apps.accounts.urls")),
     path("accounts/", include("django.contrib.auth.urls")),
     path("restaurants/", include("rms.apps.restaurants.urls")),
