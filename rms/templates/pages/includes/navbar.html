@@ -1,8 +1,9 @@
-{% load static %}
-{% load cart_tag %}
+{% load static %} {% load cart_tag %}
 
-<nav class="navbar-classic navbar navbar-expand-lg">
-  <a class="navbar-brand" href="{% url 'home' %}"><img src="{% static 'images/brand/logo/brand-logo.png' %}" alt="..." /></a>
+<nav class="navbar fixed-top navbar-expand-lg">
+  <a class="navbar-brand" href="{% url 'home' %}"
+    ><img src="{% static 'images/brand/logo/brand-logo.png' %}" alt="..."
+  /></a>
   <button
     class="navbar-toggler"
     type="button"
@@ -19,144 +20,145 @@
     <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
       <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'restaurants:cafeterias' %}">Cafeterias</a>
+        <a class="nav-link" href="{% url 'restaurants:cafeterias' %}"
+          >Cafeterias</a
+        >
       </li>
     </ul>
-  </div>
-  <!--Navbar nav -->
-  <ul class="navbar-nav navbar-right-wrap ms-auto d-flex nav-top-wrap">
-    <li class="dropdown stopevent">
-      <a
-        class="
-          btn btn-light btn-icon
-          rounded-circle
-          indicator indicator-primary
-          text-muted
-        "
-        href="#"
-        role="button"
-        id="dropdownNotification"
-        data-bs-toggle="dropdown"
-        aria-haspopup="true"
-        aria-expanded="false"
-      >
-        <i class="icon-xs" data-feather="bell"></i>
-      </a>
-      <div
-        class="dropdown-menu dropdown-menu-lg dropdown-menu-end"
-        aria-labelledby="dropdownNotification"
-      >
-        <div class="">
-          <div
-            class="
-              border-bottom
-              px-3
-              pt-2
-              pb-3
-              d-flex
-              justify-content-between
-              align-items-center
-            "
-          >
-            <p class="mb-0 text-dark fw-medium fs-4">Notifications</p>
-            <a href="#" class="text-muted">
-              <span>
-                <i class="me-1 icon-xxs" data-feather="settings"></i>
-              </span>
-            </a>
-          </div>
-          <!-- List group -->
-          <ul class="list-group list-group-flush notification-list-scroll">
-            <!-- List group item -->
-            <li class="list-group-item bg-light">
+    <!--Navbar nav -->
+    <ul class="navbar-nav navbar-right-wrap mx-5 d-flex nav-top-wrap">
+      <li class="dropdown stopevent me-2">
+        <a
+          class="
+            btn btn-light btn-icon
+            rounded-circle
+            indicator indicator-primary
+            text-muted
+          "
+          href="#"
+          role="button"
+          id="dropdownNotification"
+          data-bs-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          <i class="icon-xs" data-feather="bell"></i>
+        </a>
+        <div
+          class="dropdown-menu dropdown-menu-lg dropdown-menu-end"
+          aria-labelledby="dropdownNotification"
+        >
+          <div class="">
+            <div
+              class="
+                border-bottom
+                px-3
+                pt-2
+                pb-3
+                d-flex
+                justify-content-between
+                align-items-center
+              "
+            >
+              <p class="mb-0 text-dark fw-medium fs-4">Notifications</p>
               <a href="#" class="text-muted">
-                <h5 class="fw-bold mb-1">Rishi Chopra</h5>
-                <p class="mb-0">
-                  Mauris blandit erat id nunc blandit, ac eleifend dolor
-                  pretium.
-                </p>
+                <span>
+                  <i class="me-1 icon-xxs" data-feather="settings"></i>
+                </span>
               </a>
-            </li>
-            <!-- List group item -->
-            <li class="list-group-item">
-              <a href="#" class="text-muted">
-                <h5 class="fw-bold mb-1">Neha Kannned</h5>
-                <p class="mb-0">
-                  Proin at elit vel est condimentum elementum id in ante.
-                  Maecenas et sapien metus.
-                </p>
+            </div>
+            <!-- List group -->
+            <ul class="list-group list-group-flush notification-list-scroll">
+              <!-- List group item -->
+              <li class="list-group-item bg-light">
+                <a href="#" class="text-muted">
+                  <h5 class="fw-bold mb-1">Rishi Chopra</h5>
+                  <p class="mb-0">
+                    Mauris blandit erat id nunc blandit, ac eleifend dolor
+                    pretium.
+                  </p>
+                </a>
+              </li>
+              <!-- List group item -->
+              <li class="list-group-item">
+                <a href="#" class="text-muted">
+                  <h5 class="fw-bold mb-1">Neha Kannned</h5>
+                  <p class="mb-0">
+                    Proin at elit vel est condimentum elementum id in ante.
+                    Maecenas et sapien metus.
+                  </p>
+                </a>
+              </li>
+              <!-- List group item -->
+              <li class="list-group-item">
+                <a href="#" class="text-muted">
+                  <h5 class="fw-bold mb-1">Nirmala Chauhan</h5>
+                  <p class="mb-0">
+                    Morbi maximus urna lobortis elit sollicitudin
+                    sollicitudieget elit vel pretium.
+                  </p>
+                </a>
+              </li>
+              <!-- List group item -->
+              <li class="list-group-item">
+                <a href="#" class="text-muted">
+                  <h5 class="fw-bold mb-1">Sina Ray</h5>
+                  <p class="mb-0">
+                    Sed aliquam augue sit amet mauris volutpat hendrerit sed
+                    nunc eu diam.
+                  </p>
+                </a>
+              </li>
+            </ul>
+            <div class="border-top px-3 py-2 text-center">
+              <a href="#" class="text-inherit fw-semi-bold">
+                View all Notifications
               </a>
-            </li>
-            <!-- List group item -->
-            <li class="list-group-item">
-              <a href="#" class="text-muted">
-                <h5 class="fw-bold mb-1">Nirmala Chauhan</h5>
-                <p class="mb-0">
-                  Morbi maximus urna lobortis elit sollicitudin sollicitudieget
-                  elit vel pretium.
-                </p>
-              </a>
-            </li>
-            <!-- List group item -->
-            <li class="list-group-item">
-              <a href="#" class="text-muted">
-                <h5 class="fw-bold mb-1">Sina Ray</h5>
-                <p class="mb-0">
-                  Sed aliquam augue sit amet mauris volutpat hendrerit sed nunc
-                  eu diam.
-                </p>
-              </a>
-            </li>
-          </ul>
-          <div class="border-top px-3 py-2 text-center">
-            <a href="#" class="text-inherit fw-semi-bold">
-              View all Notifications
-            </a>
+            </div>
           </div>
         </div>
-      </div>
-    </li>
-    <!-- List -->
-    {% if user.is_authenticated %}
-    <!-- shopping cart -->
-    <li class="dropdown stopevent">
-      <a
-        class="
-          btn btn-light btn-icon
-          rounded-circle
-          indicator indicator-primary
-          text-muted
-        "
-        href="#"
-        role="button"
-        id="dropdownCart"
-        data-bs-toggle="dropdown"
-        aria-haspopup="true"
-        aria-expanded="false"
-      >
-      <i class="icon-xs" data-feather="shopping-cart"></i>
-    </a>
-      <div
-      class="dropdown-menu dropdown-menu-lg dropdown-menu-end"
-      aria-labelledby="dropdownCart"
-      >
-        <div class="">
-          <div
-            class="
-              border-bottom
-              px-3
-              pt-2
-              pb-3
-              d-flex
-              justify-content-between
-              align-items-center
-            "
-          >
-            <p class="mb-0 text-dark fw-medium fs-4">Shopping Cart</p>
-          </div>
-          <!-- List group -->
-          <ul class="list-group list-group-flush notification-list-scroll">
-            {% for key,value in request.session.cart.items %}
+      </li>
+      <!-- List -->
+      {% if user.is_authenticated %}
+      <!-- shopping cart -->
+      <li class="dropdown stopevent me-2">
+        <a
+          class="
+            btn btn-light btn-icon
+            rounded-circle
+            indicator indicator-primary
+            text-muted
+          "
+          href="#"
+          role="button"
+          id="dropdownCart"
+          data-bs-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          <i class="icon-xs" data-feather="shopping-cart"></i>
+        </a>
+        <div
+          class="dropdown-menu dropdown-menu-lg dropdown-menu-end"
+          aria-labelledby="dropdownCart"
+        >
+          <div class="">
+            <div
+              class="
+                border-bottom
+                px-3
+                pt-2
+                pb-3
+                d-flex
+                justify-content-between
+                align-items-center
+              "
+            >
+              <p class="mb-0 text-dark fw-medium fs-4">Shopping Cart</p>
+            </div>
+            <!-- List group -->
+            <ul class="list-group list-group-flush notification-list-scroll">
+              {% for key,value in request.session.cart.items %}
               <!-- List group item -->
               <li class="list-group-item bg-light">
                 <span href="#" class="text-muted">
@@ -166,109 +168,135 @@
                       <h6 class="mb-1">Price: {{value.price}}</h6>
                       <h6 class="mb-1">Quantity: {{value.quantity}}</h6>
                       <p class="mb-0">
-                        <strong class="fw-bold">Total: {{ value.price|multiply:value.quantity }}</strong>
+                        <strong class="fw-bold"
+                          >Total: {{ value.price|multiply:value.quantity
+                          }}</strong
+                        >
                       </p>
                     </div>
                     <div class="col-4 text-center">
                       {% if value.image %}
-                        <img src="{{value.image}}"  class="d-inline-block avatar avatar-lg rounded-circle mr-4" alt="{{value.name}}" />
+                      <img
+                        src="{{value.image}}"
+                        class="
+                          d-inline-block
+                          avatar avatar-lg
+                          rounded-circle
+                          mr-4
+                        "
+                        alt="{{value.name}}"
+                      />
                       {% endif %}
                     </div>
                     <div class="col-2">
-                      <a href="{% url 'orders:item_clear' value.product_id %}"><i class="icon-xs" data-feather="trash"></i></a>
+                      <a href="{% url 'orders:item_clear' value.product_id %}"
+                        ><i class="icon-xs" data-feather="trash"></i
+                      ></a>
                     </div>
                   </div>
                 </span>
               </li>
-            {% endfor %}
-          </ul>
-          <div class="border-top px-3 py-2 text-center">
-            <a href="{% url 'orders:cart_detail' %}" class="text-inherit fw-semi-bold">
-              View all Items in Cart
-            </a>
+              {% endfor %}
+            </ul>
+            <div class="border-top px-3 py-2 text-center">
+              <a
+                href="{% url 'orders:cart_detail' %}"
+                class="text-inherit fw-semi-bold"
+              >
+                View all Items in Cart
+              </a>
+            </div>
           </div>
         </div>
-      </div>
-    </li>
-    <li class="dropdown ms-2">
-      <a
-        class="rounded-circle"
-        href="#"
-        role="button"
-        id="dropdownUser"
-        data-bs-toggle="dropdown"
-        aria-haspopup="true"
-        aria-expanded="false"
-      >
-        <div class="avatar avatar-md avatar-indicators avatar-online">
-          {% if user.avatar %}
-          <img alt="avatar" src="{{user.avatar.url}}" class="rounded-circle" />
-          {% else %}
-          <img alt="avatar" src="https://ui-avatars.com/api/?name={{user.first_name}}+{{user.last_name}}" class="rounded-circle" />
-          {% endif %}
-        </div>
-      </a>
-      <div
-        class="dropdown-menu dropdown-menu-end"
-        aria-labelledby="dropdownUser"
-      >
-        <div class="px-4 pb-0 pt-2">
-          <div class="lh-1">
-            <h5 class="mb-1">
-              {{request.user.first_name}} {{request.user.last_name}}
-            </h5>
-            <a
-              href="{% url 'accounts:profile' user.username %}"
-              class="text-inherit fs-6"
-              >View my profile</a
-            >
+      </li>
+      <li class="dropdown">
+        <a
+          class="rounded-circle"
+          href="#"
+          role="button"
+          id="dropdownUser"
+          data-bs-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          <div class="avatar avatar-md avatar-indicators avatar-online">
+            {% if user.avatar %}
+            <img
+              alt="avatar"
+              src="{{user.avatar.url}}"
+              class="rounded-circle"
+            />
+            {% else %}
+            <img
+              alt="avatar"
+              src="https://ui-avatars.com/api/?name={{user.first_name}}+{{user.last_name}}"
+              class="rounded-circle"
+            />
+            {% endif %}
           </div>
-          <div class="dropdown-divider mt-3 mb-2"></div>
-        </div>
+        </a>
+        <div
+          class="dropdown-menu dropdown-menu-end"
+          aria-labelledby="dropdownUser"
+        >
+          <div class="px-4 pb-0 pt-2">
+            <div class="lh-1">
+              <h5 class="mb-1">
+                {{request.user.first_name}} {{request.user.last_name}}
+              </h5>
+              <a
+                href="{% url 'accounts:profile' user.username %}"
+                class="text-inherit fs-6"
+                >View my profile</a
+              >
+            </div>
+            <div class="dropdown-divider mt-3 mb-2"></div>
+          </div>
 
-        <ul class="list-unstyled">
-          <li>
-            <a
-              class="dropdown-item"
-              href="{% url 'accounts:setting' user.username %}"
-            >
-              <i
-                class="me-2 icon-xxs dropdown-item-icon"
-                data-feather="user"
-              ></i
-              >Edit Profile
-            </a>
-          </li>
-          <li>
-            <a class="dropdown-item" href="#">
-              <i
-                class="me-2 icon-xxs dropdown-item-icon"
-                data-feather="activity"
-              ></i
-              >Activity Log
-            </a>
-          </li>
-          <li>
-            <a class="dropdown-item" href="#">
-              <i
-                class="me-2 icon-xxs dropdown-item-icon"
-                data-feather="settings"
-              ></i
-              >Account Settings
-            </a>
-          </li>
-          <li>
-            <a class="dropdown-item" href="{% url 'logout' %}">
-              <i
-                class="me-2 icon-xxs dropdown-item-icon"
-                data-feather="power"
-              ></i
-              >Sign Out
-            </a>
-          </li>
-        </ul>
-      </div>
-    </li>
-    {% endif %}
-  </ul>
+          <ul class="list-unstyled">
+            <li>
+              <a
+                class="dropdown-item"
+                href="{% url 'accounts:setting' user.username %}"
+              >
+                <i
+                  class="me-2 icon-xxs dropdown-item-icon"
+                  data-feather="user"
+                ></i
+                >Edit Profile
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#">
+                <i
+                  class="me-2 icon-xxs dropdown-item-icon"
+                  data-feather="activity"
+                ></i
+                >Activity Log
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#">
+                <i
+                  class="me-2 icon-xxs dropdown-item-icon"
+                  data-feather="settings"
+                ></i
+                >Account Settings
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="{% url 'logout' %}">
+                <i
+                  class="me-2 icon-xxs dropdown-item-icon"
+                  data-feather="power"
+                ></i
+                >Sign Out
+              </a>
+            </li>
+          </ul>
+        </div>
+      </li>
+      {% endif %}
+    </ul>
+  </div>
 </nav>

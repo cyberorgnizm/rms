@@ -28,3 +28,21 @@ body {
   height: 12.5rem;
   width: 12.5rem;
 }
+
+/* bootstrap */
+.carousel-item:after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.carousel-caption {
+  top: 50%;
+  transform: translateY(-30%);
+  z-index: 1000;
+}
