@@ -9,7 +9,7 @@ from django.conf import settings
 class User(AbstractUser):
     """Model for managing users registered on the platform"""
 
-    avatar = models.ImageField(upload_to=f"{settings.MEDIA_ROOT}users", verbose_name="upload photo", null=True, blank=True)
+    avatar = models.ImageField(upload_to="users", verbose_name="upload photo", null=True, blank=True)
     bio = models.TextField(verbose_name="About", blank=True, null=True)
     phone = PhoneNumberField(null=True, blank=True)
     is_student = models.BooleanField(default=False)

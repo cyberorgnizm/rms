@@ -17,7 +17,7 @@ class Cafeteria(models.Model):
     name = models.CharField(max_length=255)
     slug = models.SlugField(null=True, blank=True)
     email = models.EmailField(blank=True, null=True)
-    image = models.ImageField(upload_to=f"{settings.MEDIA_ROOT}cafeterias")
+    image = models.ImageField(upload_to=f"cafeterias")
     manager = models.ForeignKey('accounts.Worker', on_delete=models.SET_NULL, null=True, blank=True)
     address = models.TextField()
     opening_hour = models.TimeField(blank=True, null=True)
@@ -53,7 +53,7 @@ class Menu(models.Model):
 
     cafeteria = models.ForeignKey('Cafeteria', related_name="menus", on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
-    image = models.ImageField(upload_to=f"{settings.MEDIA_ROOT}products")
+    image = models.ImageField(upload_to=f"products")
     description = models.TextField()
     slug = models.SlugField(blank=True, unique=True)
     menu_type = models.CharField(max_length=255, choices=MENU_TYPES)
