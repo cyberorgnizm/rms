@@ -8,6 +8,8 @@ django = "*"
 django-shopping-cart = "*"
 pillow = "*"
 psycopg2 = "*"
+gunicorn = "*"
+django-heroku = "*"
 
 [dev-packages]
 
