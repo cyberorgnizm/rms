@@ -6,7 +6,6 @@ from django.http import HttpResponseForbidden, HttpResponseRedirect, HttpRespons
 from django.views import generic
 from django.urls import reverse_lazy, reverse
 from . import forms, models
-from rms.apps.orders.models import PurchaseOrder
 
 
 class RegistrationView(generic.FormView):
@@ -44,6 +43,8 @@ class ProfileView(LoginRequiredMixin, generic.DetailView):
     template_name = "registration/profile.html"
 
     def get_context_data(self, **kwargs):
+        from rms.apps.orders.models import PurchaseOrder
+
         context = super().get_context_data(**kwargs)
         if self.request.user.is_student:
             user = self.model.objects.get(id=self.request.user.id)

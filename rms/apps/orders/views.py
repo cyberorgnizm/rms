@@ -3,12 +3,11 @@ from django.utils import timezone
 from django.shortcuts import render, redirect
 from django.views import generic
 from django.db import transaction
-from django.db.models.expressions import F
 from django.contrib.auth.decorators import login_required
 from cart.cart import Cart
-from .models import PurchaseOrder, PurchaseLine
-from rms.apps.accounts.models import Student
+from rms.apps.accounts.models import Student, Worker
 from rms.apps.restaurants.models import Cafeteria, Menu
+from .models import PurchaseOrder, PurchaseLine, Invoice
 
 
 class CheckoutPurchasesView(generic.TemplateView):
@@ -68,9 +67,6 @@ class CheckoutPurchasesView(generic.TemplateView):
             cart.clear()
             return redirect("orders:cart_detail")
 
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["total_cost"] = sum((float(item["price"]) * int(item["quantity"]) for _, item in self.request.session.get('cart').items()))
@@ -89,8 +85,18 @@ class PurchaseOrderListView(generic.ListView):
             queryset = queryset.filter(student=student)
             return queryset
         elif self.request.user.is_worker:
+            worker = Worker.objects.get(user=self.request.user)
+            queryset = queryset.filter(cafeteria=worker.cafeteria)
             return queryset
         return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["pending_orders"] = self.get_queryset().filter(status='pending')
+        context["cancelled_orders"] = self.get_queryset().filter(status='cancelled')
+        context["completed_orders"] = self.get_queryset().filter(status='completed')
+        return context
+
 
 
 class PurchaseOrderDetailView(generic.DetailView):
@@ -110,6 +116,37 @@ class PurchaseOrderDetailView(generic.DetailView):
         elif self.request.user.is_worker:
             return queryset
         return queryset
+
+    @transaction.atomic
+    def post(self, request, *args, **kwargs):
+        if request.user.is_worker:
+            worker = Worker.objects.get(user=request.user)
+            order = self.get_object()
+            if request.POST.get('approve', None) == 'on':
+                    for line in order.lines.all():
+                        line.is_ready = True
+                        line.save()
+                    order.status = 'completed'
+                    order.approved_by_worker = worker
+                    order.save()
+                    # create an invoice on approval
+                    Invoice.objects.create(
+                        invoice_id=uuid.uuid4(),
+                        order=order,
+                        cafeteria=order.cafeteria,
+                        student=order.student,
+                        due_date=timezone.now()
+                    )
+            elif request.POST.get('reject', None) == 'on':
+                    for line in order.lines.all():
+                        line.is_ready = False
+                        line.save()
+                    order.status = 'cancelled'
+                    order.approved_by_worker = worker
+                    order.save()
+            return redirect("purchases")
+            
+        return redirect("purchase_detail", id=str(kwargs["id"]))
 
 
 class PurchaseOrderUpdateView(generic.UpdateView):
