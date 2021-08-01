@@ -73,6 +73,7 @@ class Worker(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     worker_id = models.UUIDField(unique=True, blank=True)
+    cafeteria = models.ForeignKey('restaurants.Cafeteria', related_name="workers", on_delete=models.SET_NULL, null=True, blank=True)
     worker_role = models.CharField(max_length=255, choices=WORKER_ROLES, blank=True)
 
     def __str__(self):
