@@ -1,77 +1,95 @@
 {% extends 'cart/base.html' %} {% load cart_tag %} {% block main %}
-<div class="container">
-  <h2 class="fw-bold text-uppercase mt-5">Your Cart Details</h2>
-  <p>You currently have <strong>{{item_count}}</strong> items in your cart</p>
+<div class="container mb-20">
+  <div class="text-center mt-15 mb-10">
+    <h3
+      class="display-6"
+      style="text-decoration: underline; text-decoration-color: blueviolet"
+    >
+      Shopping Cart
+    </h3>
+  </div>
   {% if request.session.cart.items %}
-  <table class="table text-nowrap mb-0 mt-5">
-    <thead class="table-light">
-      <tr>
-        <th>S/No</th>
-        <th>Photo</th>
-        <th>Menu</th>
-        <th>Quantity</th>
-        <th>Price</th>
-        <th>Total</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for key,value in request.session.cart.items %}
-      <tr>
-        <td class="align-middle">{{key}}</td>
-        <td class="align-middle">
-          <div class="d-flex align-items-center">
-            <div>
-              <div class="icon-shape icon-md border p-4 rounded-1">
-                <img
-                  class="avatar avatar-lg rounded-circle"
-                  src="{{value.image}}"
-                  alt="{{value.name}}"
-                />
+  <h2 class="text-uppercase">Current in your cart</h2>
+  <p><strong>{{item_count}}</strong> items in your cart</p>
+  <div class="table-responsive">
+    <table class="table table-md text-nowrap mb-0 mt-5">
+      <thead class="table-light">
+        <tr>
+          <th>S/No</th>
+          <th>Photo</th>
+          <th>Menu</th>
+          <th>Quantity</th>
+          <th>Price</th>
+          <th>Total</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for key,value in request.session.cart.items %}
+        <tr>
+          <td class="align-middle">{{key}}</td>
+          <td class="align-middle">
+            <div class="d-flex align-items-center">
+              <div>
+                <div class="icon-shape icon-md border p-4 rounded-1">
+                  <img
+                    class="avatar avatar-lg rounded-circle"
+                    src="{{value.image}}"
+                    alt="{{value.name}}"
+                  />
+                </div>
               </div>
             </div>
-          </div>
-        </td>
-        <td class="align-middle">
-          {{value.name}}
-        </td>
-        <td class="align-middle">{{value.quantity}}</td>
-        <td class="align-middle">{{value.price}}</td>
-        <td class="align-middle text-dark">
-          {{value.price|multiply:value.quantity}}
-        </td>
-        <td>
-          <a href="{% url 'orders:item_increment' value.product_id %}" class="btn btn-md btn-outline-primary mr-3">
-            <i class="icon-xs" data-feather="plus"></i>
-          </a>
-          {% if value.quantity > 1 %}
-          <a href="{% url 'orders:item_decrement' value.product_id %}" class="btn btn-md btn-outline-danger">
-            <i class="icon-xs" data-feather="minus"></i>
-          </a>
-          {% endif %}
-        </td>
-      </tr>
-      {% endfor %}
-      <tr>
-        <td colspan="3" class="align-middle">
-          <strong>Total</strong>
-        </td>
-        <td class="align-middle">
-          {{quantity_sum}}
-        </td>
-        <td class="align-middle">
-          {{price_sum}}
-        </td>
-        <td colspan="2" class="align-middle">{{total_price}}</td>
-      </tr>
-    </tbody>
-  </table>
+          </td>
+          <td class="align-middle">{{value.name}}</td>
+          <td class="align-middle">{{value.quantity}}</td>
+          <td class="align-middle">{{value.price}}</td>
+          <td class="align-middle text-dark">
+            {{value.price|multiply:value.quantity}}
+          </td>
+          <td>
+            <a
+              href="{% url 'orders:item_increment' value.product_id %}"
+              class="btn btn-md btn-outline-primary mr-3"
+            >
+              <i class="icon-xs" data-feather="plus"></i>
+            </a>
+            {% if value.quantity > 1 %}
+            <a
+              href="{% url 'orders:item_decrement' value.product_id %}"
+              class="btn btn-md btn-outline-danger"
+            >
+              <i class="icon-xs" data-feather="minus"></i>
+            </a>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+        <tr>
+          <td colspan="3" class="align-middle">
+            <strong>Total</strong>
+          </td>
+          <td class="align-middle">{{quantity_sum}}</td>
+          <td class="align-middle">{{price_sum}}</td>
+          <td colspan="2" class="align-middle">{{total_price}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
   <div class="mt-5">
-      <a href="{% url 'orders:checkout' %}" class="btn btn-md btn-outline-primary mr-5"><small>Proceed <i class="icon-xs" data-feather="arrow-right"></i></small></a>
-      <a href="{% url 'orders:cart_clear' %}" class="btn btn-md btn-outline-danger"><small>Clear <i class="icon-xs" data-feather="trash-2"></i></small></a>
+    <a
+      href="{% url 'orders:checkout' %}"
+      class="btn btn-md btn-outline-primary mr-5"
+      ><small>Proceed <i class="icon-xs" data-feather="arrow-right"></i></small
+    ></a>
+    <a
+      href="{% url 'orders:cart_clear' %}"
+      class="btn btn-md btn-outline-danger"
+      ><small>Clear <i class="icon-xs" data-feather="trash-2"></i></small
+    ></a>
   </div>
   {% else %}
-  <div class="text-center mt-10">
+  <div class="text-center my-20">
     <i class="icon-xxl" data-feather="shopping-cart"></i>
     <p class="mt-5">Your cart is empty</p>
   </div>

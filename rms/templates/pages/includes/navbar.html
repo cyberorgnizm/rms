@@ -168,9 +168,7 @@
                       <h6 class="mb-1">Price: {{value.price}}</h6>
                       <h6 class="mb-1">Quantity: {{value.quantity}}</h6>
                       <p class="mb-0">
-                        <strong class="fw-bold"
-                          >Total: {{ value.price|multiply:value.quantity
-                          }}</strong
+                        <strong><small>Total: {{ value.price|multiply:value.quantity}}</small></strong
                         >
                       </p>
                     </div>

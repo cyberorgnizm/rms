@@ -1,6 +1,13 @@
 {% extends 'cart/base.html' %} {% load cart_tag %} {% block main %}
 <div class="container">
-  <h2 class="fw-bold text-uppercase mt-5">Checkout</h2>
+  <div class="text-center mt-15 mb-10">
+    <h3
+      class="display-6"
+      style="text-decoration: underline; text-decoration-color: blueviolet"
+    >
+      Checkout
+    </h3>
+  </div>
   <p>You currently have <strong>{{request.session.cart.items|length}}</strong> items in your cart</p>
   {% if request.session.cart.items %}
   <table class="table text-nowrap mb-0 mt-5">

@@ -1,50 +1,109 @@
-{% extends 'pages/base.html'%}
-
-{% block content %}
+{% extends 'pages/base.html'%} 
+{% block main %}
 <div>
-    <div class="header">
-      {% include 'pages/includes/navbar.html' %}
-    </div>
-    <div class="container">
-        <div class="row mt-5">
-            <div class="col-md-4">
-                <img class="rounded" src="{{object.image.url}}" alt="{{object.name}}" height="200"/>
-            </div>
-            <div class="col-md-7">
-                <h4 class="mb-5"><strong>Name</strong>: {{object.name}}</strong></h4>
-                <h4 class="mb-5"><strong>Email</strong>: {{object.email}}</strong></h4>
-                <h4 class="mb-5"><strong>Manager</strong>: {{object.manager}}</strong></h4>
-                <h4 class="mb-5"><strong>Address</strong>: {{object.address}}</strong></h4>
-            </div>
+  <div class="container">
+    <div class="row mt-12">
+      <div class="col-12" style="height: 400px">
+        <div
+          style="
+            height: 400px;
+            width: 100%;
+            max-width: 1108px;
+            background: rgba(0, 0, 0, 0.6);
+          "
+          class="position-absolute rounded"
+        ></div>
+        <div
+          style="height: 400px; width: 100%; max-width: 1108px"
+          class="
+            position-absolute
+            rounded
+            d-flex
+            flex-column
+            align-items-center
+            justify-content-center
+          "
+        >
+          <h4 class="display-5 text-white mb-2">Welcome to {{object.name}}</h4>
+          <img
+            src="{{object.manager.user.avatar.url}}"
+            class="
+              avatar avatar-xl
+              rounded-circle
+              border border-circle border-2 border-primary
+            "
+            alt="{{object.manager}}"
+          />
+          <p class="text-white mb-2">{{object.manager}}</p>
+          <div class="text-justify-left">
+            <p class="text-white mb-2">
+              <i class="me-2 icon-xs" data-feather="mail"></i> {{object.email}}
+            </p>
+            <p class="text-white mb-2">
+              <i class="me-2 icon-xs" data-feather="compass"></i>
+              {{object.address}}
+            </p>
+          </div>
         </div>
-        <h5 class="my-3">Available menus in the cafeteria</h5>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Image</th>
-                    <th>Name</th>
-                    <th>Type</th>
-                    <th>Price</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for menu in object.menus.all %}    
-                <tr>
-                    <td>
-                        <img class="avatar-lg rounded-circle" src="{{menu.image.url}}" alt="{{menu.menu_name}}" />
-                    </td>
-                    <td scope="row" class="align-middle">{{menu.name}}</td>
-                    <td class="align-middle">{{menu.menu_type}}</td>
-                    <td class="align-middle">{{menu.price}}</td>
-                    <td class="align-middle">
-                        <a href="{% url 'orders:cart_add' menu.id %}" class="btn btn-sm btn-outline-secondary w-50">Add</a>
-                        <!-- <a href="#" class="btn btn-sm btn-outline-danger w-50">Remove</a> -->
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <img
+          style="
+            object-fit: cover;
+            object-position: center;
+            width: 100%;
+            max-width: 1108px;
+          "
+          class="rounded"
+          src="{{object.image.url}}"
+          alt="{{object.name}}"
+          height="400"
+        />
+      </div>
     </div>
+    <section class="page-section">
+      <div class="row">
+        <div class="col-12 d-flex justify-content-center">
+          <p
+            class="h1 section-heading text-uppercase text-center mt-8"
+            style="
+              text-decoration: underline;
+              text-decoration-color: blueviolet;
+            "
+          >
+            cafeteria menu
+          </p>
+        </div>
+      </div>
+    </section>
+    <section class="page-section my-7">
+      <div class="row">
+        {% for menu in object.menus.all %}
+        <div class="col-md-3 col-xs-8 mb-5">
+          <div class="card h-100 rounded-3" style="width: 15rem; margin: auto;">
+            <img
+              class="card-img-top"
+              src="{{menu.image.url}}"
+              alt="{{menu.menu_name}}"
+            />
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <h5 class="card-title">{{menu.name}}</h5>
+                    <h5 class="card-title text-muted">{{menu.menu_type|title}}</h5>
+                </div>
+                <h6 class="card-subtitle mb-2 text-muted">{{menu.price}}</h6>
+                <p class="card-text text-truncate">
+                    <small>{{menu.description}}</small>
+                </p>
+                <a
+              href="{% url 'orders:cart_add' menu.id %}"
+              class="btn btn-sm btn-outline-secondary w-100"
+              >Add</a
+            >
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+  </div>
 </div>
 {% endblock %}
