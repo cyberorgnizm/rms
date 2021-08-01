@@ -6,6 +6,7 @@ class PurchaseOrder(models.Model):
 
     ORDER_STATUS = (
         ('pending', 'Pending'),
+        ('processing', 'Processing'),
         ('cancelled', 'Cancelled'),
         ('completed',  'Closed Completed'),
     )
@@ -51,7 +52,7 @@ class Invoice(models.Model):
     """Model for managing invoices issued to users"""
 
     invoice_id = models.UUIDField(unique=True)
-    order = models.ForeignKey('orders.PurchaseOrder', on_delete=models.CASCADE)
+    order = models.OneToOneField('orders.PurchaseOrder', on_delete=models.CASCADE)
     cafeteria = models.ForeignKey('restaurants.Cafeteria', on_delete=models.CASCADE)
     student = models.ForeignKey('accounts.Student', on_delete=models.CASCADE)
     date_created = models.DateTimeField(auto_now_add=True)
