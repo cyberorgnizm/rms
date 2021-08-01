@@ -21,6 +21,7 @@ class PurchaseOrder(models.Model):
     student = models.ForeignKey('accounts.Student', related_name="orders", on_delete=models.CASCADE)
     approved_by_worker = models.ForeignKey('accounts.Worker', null=True, blank=True, related_name="orders", on_delete=models.CASCADE)
     status = models.CharField(max_length=255, choices=ORDER_STATUS)
+    is_paid = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
     delivery_mode = models.CharField(max_length=255, choices=DELIVERY_MODE)
@@ -52,6 +53,7 @@ class Invoice(models.Model):
     """Model for managing invoices issued to users"""
 
     invoice_id = models.UUIDField(unique=True)
+    payment_reference = models.BigIntegerField(null=True, blank=True)
     order = models.OneToOneField('orders.PurchaseOrder', on_delete=models.CASCADE)
     cafeteria = models.ForeignKey('restaurants.Cafeteria', on_delete=models.CASCADE)
     student = models.ForeignKey('accounts.Student', on_delete=models.CASCADE)

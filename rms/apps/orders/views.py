@@ -1,16 +1,23 @@
+import os
 import uuid
+import json
+import requests
 from django.utils import timezone
 from django.shortcuts import render, redirect
 from django.views import generic
+from django.urls import reverse_lazy
 from django.db import transaction
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from cart.cart import Cart
 from rms.apps.accounts.models import Student, Worker
 from rms.apps.restaurants.models import Cafeteria, Menu
 from .models import PurchaseOrder, PurchaseLine, Invoice
 
 
-class CheckoutPurchasesView(generic.TemplateView):
+class CheckoutPurchasesView(LoginRequiredMixin, generic.TemplateView):
+    login_url = reverse_lazy("accounts:login")
+    redirect_field_name = "redirect_to"
     template_name = "order/checkout_detail.html"
 
     @transaction.atomic()
@@ -38,6 +45,22 @@ class CheckoutPurchasesView(generic.TemplateView):
                         delivery_mode='pickup',
                         delivery_address=request.user.student.student_address
                     )
+                    # verify transaction
+                    if request.is_ajax():
+                        body = json.loads(request.body)
+                        response = requests.get(f"https://api.paystack.co/transaction/verify/{body['reference']}", headers={
+                            "Authorization": f"Bearer {os.environ['PAYSTACK_SECRET']}"
+                        }).json()
+
+                        if response['message'] == "Verification successful":
+                            Invoice.objects.create(
+                                invoice_id=uuid.uuid4(),
+                                order=order,
+                                payment_reference=int(body['reference']),
+                                cafeteria=order.cafeteria,
+                                student=order.student,
+                                due_date=timezone.now()
+                            )
                     cafeteria_set.add(cafeteria)
                     order_set.add(order)
 
@@ -57,7 +80,6 @@ class CheckoutPurchasesView(generic.TemplateView):
                     # update total price for order after total price for line item is calculated
                     purchase_order.total_price += float(line.total_price)
                     purchase_order.save()
-
         except Exception as exp:
             print(exp)
             # TODO: handle exception when performing above computations
@@ -73,7 +95,9 @@ class CheckoutPurchasesView(generic.TemplateView):
         return context
 
 
-class PurchaseOrderListView(generic.ListView):
+class PurchaseOrderListView(LoginRequiredMixin, generic.ListView):
+    login_url = reverse_lazy("accounts:login")
+    redirect_field_name = "redirect_to"
     model = PurchaseOrder
     template_name = "order/purchases_list.html"
     context_object_name = "orders"
@@ -98,8 +122,9 @@ class PurchaseOrderListView(generic.ListView):
         return context
 
 
-
-class PurchaseOrderDetailView(generic.DetailView):
+class PurchaseOrderDetailView(LoginRequiredMixin, generic.DetailView):
+    login_url = reverse_lazy("accounts:login")
+    redirect_field_name = "redirect_to"
     model = PurchaseOrder
     slug_field = "order_id"
     slug_url_kwarg = "id"

@@ -43,9 +43,9 @@
           </td>
           <td class="align-middle">{{value.name}}</td>
           <td class="align-middle">{{value.quantity}}</td>
-          <td class="align-middle">{{value.price}}</td>
-          <td class="align-middle text-dark">
-            {{value.price|multiply:value.quantity}}
+          <td class="align-middle">&#8358;{{value.price}}</td>
+          <td class="align-middle">
+            &#8358;{{value.price|multiply:value.quantity}}
           </td>
           <td>
             <a
@@ -70,8 +70,8 @@
             <strong>Total</strong>
           </td>
           <td class="align-middle">{{quantity_sum}}</td>
-          <td class="align-middle">{{price_sum}}</td>
-          <td colspan="2" class="align-middle">{{total_price}}</td>
+          <td class="align-middle text-dark">&#8358;{{price_sum}}</td>
+          <td colspan="2" class="align-middle text-dark">&#8358;{{total_price}}</td>
         </tr>
       </tbody>
     </table>
