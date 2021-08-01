@@ -18,7 +18,6 @@ class Cafeteria(models.Model):
     slug = models.SlugField(null=True, blank=True)
     email = models.EmailField(blank=True, null=True)
     image = models.ImageField(upload_to=f"cafeterias")
-    manager = models.ForeignKey('accounts.Worker', on_delete=models.SET_NULL, null=True, blank=True)
     address = models.TextField()
     opening_hour = models.TimeField(blank=True, null=True)
     closing_hour = models.TimeField(blank=True, null=True)
@@ -33,8 +32,8 @@ class Cafeteria(models.Model):
 class CafeteriaReview(models.Model):
     """Model for managing reviews on cafeterias"""
 
-    cafeteria = models.ForeignKey('Cafeteria', on_delete=models.CASCADE)
-    reviewer = models.ForeignKey('accounts.Student', on_delete=models.CASCADE)
+    cafeteria = models.ForeignKey('Cafeteria', related_name="reviews", on_delete=models.CASCADE)
+    reviewer = models.OneToOneField('accounts.Student', on_delete=models.CASCADE)
     rating = models.IntegerField(choices=RATING_CHOICES, null=True, blank=True)
     comment = models.TextField(blank=True, null=True)
 
@@ -76,7 +75,7 @@ class MenuReview(models.Model):
     """Model for managing reviews on cafeterias menus"""
 
     reviewer = models.ForeignKey('accounts.Student', on_delete=models.CASCADE)
-    menu = models.ForeignKey('Menu', on_delete=models.CASCADE)
+    menu = models.ForeignKey('Menu', related_name="reviews", on_delete=models.CASCADE)
     rating = models.IntegerField(choices=RATING_CHOICES, null=True, blank=True)
     comment = models.TextField(blank=True, null=True)
 
