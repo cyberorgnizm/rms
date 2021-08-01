@@ -1,0 +1,92 @@
+{% extends 'pages/base.html'%} 
+{% block main %}
+<div>
+  <div class="container">
+    <div class="row mt-12">
+      <div class="col-12" style="height: 400px">
+        <div
+          style="
+            height: 400px;
+            width: 100%;
+            max-width: 1108px;
+            background: rgba(0, 0, 0, 0.3);
+          "
+          class="position-absolute rounded"
+        ></div>
+        <img
+          style="
+            object-fit: cover;
+            object-position: center;
+            width: 100%;
+            max-width: 1108px;
+          "
+          class="rounded"
+          src="{{object.image.url}}"
+          alt="{{object.name}}"
+          height="400"
+        />
+      </div>
+    </div>
+    <section class="page-section">
+      <div class="row">
+        <div class="col-12 d-flex justify-content-center">
+          <p
+            class="h1 section-heading text-uppercase text-center mt-8"
+            style="
+              text-decoration: underline;
+              text-decoration-color: blueviolet;
+            "
+          >
+            Menu Detail
+          </p>
+        </div>
+        <div class="col-12">
+            <div>
+                <p class="h3 mb-2"><span class="text-uppercase">Title</span>: {{object.name}}</p>
+                <p class="h3 mb-2"><span class="text-uppercase">Type</span>: {{object.menu_type|title}}</p>
+                <p class="h3 mb-2"><span class="text-uppercase">Price</span>: {{object.price}}</p>
+                <p class="h3 mb-2"><span class="text-uppercase">Description</span>: {{object.description}}</p>
+              </div>
+        </div>
+      </div>
+    </section>
+    <section class="page-section">
+      <div class="row">
+        <div class="col-12 d-flex justify-content-center">
+          <p
+            class="h1 section-heading text-uppercase text-center mt-8"
+            style="
+              text-decoration: underline;
+              text-decoration-color: blueviolet;
+            "
+          >
+            Cafeteria Review
+          </p>
+        </div>
+        <div class="col-5 mx-auto">
+          {% if form %}
+          <form  method="post">
+            {% csrf_token %}
+            {% for field in form %}
+              <label for="{{field.label_id}}">{{field.label}}</label>
+              {{field}}
+            {% endfor %}
+            <button type="submit" class="btn btn-md btn-primary">Submit</button>
+          </form>
+          {% else %}
+            <div class="text-center">
+              <p class="text-uppercase">Your Review</p>
+              <img class="avatar avatar-md rounded-circle" src="{{review.reviewer.user.avatar.url }}" alt="{{review.reviewer}}">
+              <blockquote class="my-2">
+                <q>{{review.comment}}</q>
+              </blockquote>
+              <small class="d-block">Rating: {{review.rating}}</small>
+              <span>{{review.reviewer}}</span>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+{% endblock %}

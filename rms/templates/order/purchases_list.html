@@ -1,48 +1,78 @@
-{% extends 'cart/base.html' %} {% load cart_tag %} {% block main %}
+{% extends 'order/base.html' %} {% load cart_tag %} {% block main %}
 <div class="container">
-  <h2 class="fw-bold text-uppercase mt-5">Orders</h2>
-  <p>Below are your most recent orders</p>
-  <p>You currently have <strong>{{request.session.cart.items|length}}</strong> orders</p>
-  {% if object_list and request.user.is_student %}
-  <table class="table text-nowrap mb-5 mt-5">
-    <thead class="table-light">
-      <tr>
-        <th>Order ID</th>
-        <th>Cafeteria</th>
-        <th>Delivery Date</th>
-        <th>Status</th>
-        <th>Total Price</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for order in orders %}
-      <tr>
-        <td class="align-middle">
-            <a href="{% url 'purchase_detail' order.order_id %}">{{order.order_id}}</a>
-        </td>
-        <td class="align-middle">
-          {{order.cafeteria}}
-        </td>
-        <td class="align-middle">
-          {% if order.delivery_date %}
-            {{order.delivery_date}}
-          {% else %}
-            N/A
-          {% endif %}
-          </td>
-        <td class="align-middle">{{order.status}}</td>
-        <td class="align-middle text-dark">
-          {{order.total_price}}
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  {% else %}
-  <div class="text-center mt-10">
-    <i class="icon-xxl" data-feather="shopping-cart"></i>
-    <p class="mt-5">You have 0 items in your cart, please add items before you checkout</p>
+  <div class="text-center mt-15 mb-8">
+    <h3
+      class="display-6"
+      style="text-decoration: underline; text-decoration-color: blueviolet"
+    >
+      Orders
+    </h3>
   </div>
+  <p>Below are your most recent orders</p>
+  <div class="d-flex">
+    <p class="text-secondary me-5"><strong>{{pending_orders|length}}</strong> orders pending</p>
+    <p class="text-success me-5"><strong>{{completed_orders|length}}</strong> orders fulfilled</p>
+    <p class="text-danger"><strong>{{cancelled_orders|length}}</strong> orders canceled</p>
+  </div>
+  {% if object_list and request.user.is_authenticated %}
+    <div class="table-responsive">
+      <table class="table text-nowrap mb-5 mt-5">
+        <thead class="table-light">
+          <tr>
+            <th>Order ID</th>
+            {% if user.is_worker %}
+            <th>Student</th>
+            {% endif %}
+            <th>Cafeteria</th>
+            <th>Status</th>
+            <th>Total Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in orders %}
+          <tr>
+            <td class="align-middle">
+                <a href="{% url 'purchase_detail' order.order_id %}">{{order.order_id}}</a>
+            </td>
+            {% if user.is_worker %}
+            <td class="align-middle">
+              {{order.student}}
+            </td>
+            {% endif %}
+            <td class="align-middle">
+              {{order.cafeteria}}
+            </td>
+            <td class="align-middle">
+              {% if order.status == "completed" %}
+              <span class="text-success">
+                {{order.status}}
+                <i class="icon-xs" data-feather="check"></i>
+              </span>
+              {% elif order.status == "pending" %}
+                <span class="text-muted">
+                  {{order.status}}
+                  <i class="icon-xs" data-feather="watch"></i>
+                </span>
+              {% else %}
+                <span class="text-danger">
+                  {{order.status}}
+                  <i class="icon-xs" data-feather="delete"></i>
+                </span>
+              {% endif %}
+            </td>
+            <td class="align-middle text-dark">
+              {{order.total_price}}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="text-center mt-10">
+      <i class="icon-xxl" data-feather="shopping-cart"></i>
+      <p class="mt-5">You have 0 items in your cart, please add items before you checkout</p>
+    </div>
   {% endif %}
 </div>
 {% endblock %}

@@ -24,9 +24,16 @@
           >Cafeterias</a
         >
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'purchases' %}"
+          >Orders</a
+        >
+      </li>
     </ul>
     <!--Navbar nav -->
     <ul class="navbar-nav navbar-right-wrap mx-5 d-flex nav-top-wrap">
+      {% if user.is_authenticated %}
+      {% if user.is_worker %}
       <li class="dropdown stopevent me-2">
         <a
           class="
@@ -48,7 +55,7 @@
           class="dropdown-menu dropdown-menu-lg dropdown-menu-end"
           aria-labelledby="dropdownNotification"
         >
-          <div class="">
+          <div>
             <div
               class="
                 border-bottom
@@ -118,8 +125,7 @@
           </div>
         </div>
       </li>
-      <!-- List -->
-      {% if user.is_authenticated %}
+      {% endif %}
       <!-- shopping cart -->
       <li class="dropdown stopevent me-2">
         <a

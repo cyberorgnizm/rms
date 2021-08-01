@@ -26,7 +26,7 @@
         >
           <h4 class="display-5 text-white mb-2">Welcome to {{object.name}}</h4>
           <img
-            src="{{object.manager.user.avatar.url}}"
+            src="{{manager.user.avatar.url}}"
             class="
               avatar avatar-xl
               rounded-circle
@@ -34,7 +34,7 @@
             "
             alt="{{object.manager}}"
           />
-          <p class="text-white mb-2">{{object.manager}}</p>
+          <p class="text-white mb-2">{{manager}}</p>
           <div class="text-justify-left">
             <p class="text-white mb-2">
               <i class="me-2 icon-xs" data-feather="mail"></i> {{object.email}}
@@ -72,6 +72,9 @@
             cafeteria menu
           </p>
         </div>
+        <div class="col-12 d-flex justify-content-end">
+          <a href="{% url 'restaurants:menu-list' object.slug %}">View all</a>
+        </div>
       </div>
     </section>
     <section class="page-section my-7">
@@ -86,9 +89,11 @@
             />
             <div class="card-body">
                 <div class="d-flex justify-content-between">
-                    <h5 class="card-title">{{menu.name}}</h5>
-                    <h5 class="card-title text-muted">{{menu.menu_type|title}}</h5>
+                    <h5 class="card-title">
+                      <a href="{% url 'restaurants:menu-detail' object.slug menu.slug %}">{{menu.name}}</a>
+                    </h5>
                 </div>
+                <h5 class="card-title text-muted">{{menu.menu_type|title}}</h5>
                 <h6 class="card-subtitle mb-2 text-muted">{{menu.price}}</h6>
                 <p class="card-text text-truncate">
                     <small>{{menu.description}}</small>
@@ -102,6 +107,44 @@
           </div>
         </div>
         {% endfor %}
+      </div>
+    </section>
+    <!-- cafeteria review -->
+    <section class="page-section my-7">
+      <div class="row">
+        <div class="col-12 d-flex justify-content-center my-10">
+          <p
+            class="h1 section-heading text-uppercase text-center mt-8"
+            style="
+              text-decoration: underline;
+              text-decoration-color: blueviolet;
+            "
+          >
+            Cafeteria Review
+          </p>
+        </div>
+        <div class="col-5 mx-auto">
+          {% if form %}
+          <form  method="post">
+            {% csrf_token %}
+            {% for field in form %}
+              <label for="{{field.label_id}}">{{field.label}}</label>
+              {{field}}
+            {% endfor %}
+            <button type="submit" class="btn btn-md btn-primary">Submit</button>
+          </form>
+          {% else %}
+            <div class="text-center">
+              <p class="text-uppercase">Your Review</p>
+              <img class="avatar avatar-md rounded-circle" src="{{review.reviewer.user.avatar.url }}" alt="{{review.reviewer}}">
+              <blockquote class="my-2">
+                <q>{{review.comment}}</q>
+              </blockquote>
+              <small class="d-block">Rating: {{review.rating}}</small>
+              <span>{{review.reviewer}}</span>
+            </div>
+          {% endif %}
+        </div>
       </div>
     </section>
   </div>

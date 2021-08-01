@@ -1,7 +1,14 @@
-{% extends 'cart/base.html' %} {% load cart_tag %} {% block main %}
+{% extends 'order/base.html' %} {% load cart_tag %} {% block main %}
 <div class="container">
   {% if object %}
-  <h3 class="fw-bold text-uppercase mt-5">Order ID: {{order.order_id}}</h3>
+  <div class="text-center mt-15 mb-5">
+    <h3
+      class="display-6"
+      style="text-decoration: underline; text-decoration-color: blueviolet"
+    >
+      Order ID: {{order.order_id}}
+    </h3>
+  </div>
   <span class="fw-bold d-block text-uppercase mt-2">Status: {{order.status}}</span>
   <span class="fw-bold d-block text-uppercase mt-2">Cafeteria: {{order.cafeteria}}</span>
   {% if order.delivery_date %}
@@ -17,10 +24,7 @@
         <th>Menu</th>
         <th>Quantity</th>
         <th>Total Price</th>
-        <th>Ready?</th>
-        {% if user.is_worker %}
-        <th></th>
-        {% endif %}
+        <th>State</th>
       </tr>
     </thead>
     <tbody>
@@ -28,25 +32,47 @@
       <tr>
         <td class="align-middle">
           <a href="{% url 'restaurants:cafeteria-detail' line.menu.cafeteria.slug %}">
-            <img src="{{line.menu.image.url}}" alt="" class="avatar rounded me-3" style="object-fit: cover"> <span>{{line.menu}}</span>
+            <img src="{{line.menu.image.url}}" alt="" class="avatar rounded me-3" style="object-fit: cover"> <span class="line-name">{{line.menu}}</span>
           </a>
         </td>
         <td class="align-middle">{{line.quantity}}</td>
         <td class="align-middle">{{line.total_price}}</td>
-        <td class="align-middle text-dark">
-          {{line.is_ready}}
-        </td>
-        <!-- <td>
-          {% if not line.is_ready %}
-          <a href="#" class="btn btn-sm btn-outline-primary">Mark as Ready</a>
+        <td class="align-middle">
+          {% if not line.is_ready and order.status == "pending" %}
+            <span><i class="icon-xs" data-feather="watch"></i>processing...</span>
+          {% elif not line.is_ready and order.status == "cancelled" %}
+            <span class="text-danger">canceled <i class="icon-xs" data-feather="delete"></i></span>
           {% else %}
-          <a href="#" class="btn btn-sm btn-outline-secondary">Mark as not Ready</a>
+          <span class="text-success">ready <i class="icon-xs" data-feather="check"></i></span>
           {% endif %}
-        </td> -->
+        </td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
+  {% if user.is_worker %}
+  <div class="d-flex justify-content-end">
+    <form method="post">
+      {% csrf_token %}
+      {% if order.status == "pending" %}
+      <input type="checkbox" name="approve" id="approve-checkbox" class="form-check-input"> <label for="approve-checkbox" class="me-3"><small>Mark all as complete and approve</small></label>
+      {% elif order.status == "cancelled" %}
+      {% else %}
+      <input type="checkbox" name="reject" id="reject-checkbox" class="form-check-input"> <label for="reject-checkbox" class="me-3"><small>Mark all as incomplete and cancel</small></label>
+      {% endif %}
+      {% if order.status == "pending" %}
+      <button type="submit" class="btn btn-sm btn-primary">
+        Approve
+      </button>
+      {% elif order.status == "cancelled" %}
+      {% else %}
+      <button type="submit" class="btn btn-sm btn-danger">
+        Cancel
+      </button>
+      {% endif %}
+    </form>
+  </div>
+  {% endif %}
   {% else %}
   <div class="text-center mt-10">
     <i class="icon-xxl" data-feather="shopping-cart"></i>

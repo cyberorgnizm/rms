@@ -9,28 +9,46 @@
             </h3>
         </div>
         <div class="container">
-            <div class="row text-center">
+            <div class="row">
                 {% for cafeteria in object_list %}
-                <div class="col-md-4">
-                    <a href="{% url 'restaurants:cafeteria-detail' cafeteria.slug %}">
-                        <div class="card rounded-3">
-                            <!-- card body -->
-                            <div class="card-body pt-8">
-                                <!-- project number -->
-                                <div class="d-flex flex-column align-items-center text-truncate">
-                                    <img src="{{cafeteria.image.url}}" alt="{{cafeteria}} photo"
-                                        class="avatar-xxl rounded-2 d-block mb-3" style="object-fit: cover;" />
+                <div class="col-md-3">
+                    <div class="card rounded-3 h-100" style="width: 15rem;">
+                        <img src="{{cafeteria.image.url}}" alt="{{cafeteria}}"
+                        class="card-img-top"/>
+                        <!-- card body -->
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <span class="icon-shape icon-sm bg-light-primary text-primary rounded-1">
+                                    <i class="bi bi-shop"></i>
+                                </span>
+                                <a href="{% url 'restaurants:cafeteria-detail' cafeteria.slug %}">
+                                    <span class="fw-bold">{{cafeteria.name}}</span>
+                                </a>
+                                </h5>
+                                <h5 class="card-subtitle">
                                     <span class="icon-shape icon-sm bg-light-primary text-primary rounded-1">
-                                        <i class="bi bi-shop"></i>
+                                        <i class="bi bi-mailbox"></i>
                                     </span>
-                                    <span class="fw-bold text-dark ms-2">{{cafeteria.name}}</span>
                                     <span>{{cafeteria.email}}</span>
-                                    <span class="text-dark">Opens: {{cafeteria.opening_hour}}</span>
-                                    <span class="text-dark">Closes: {{cafeteria.closing_hour}}</span>
+                                </h5>
+                                <div class="card-text mt-3">
+                                    <u class="text-center text-dark d-block">Working Hours</u>
+                                    <div>
+                                        <span class="icon-shape icon-sm bg-light-primary text-primary rounded-1">
+                                            <i class="bi bi-hourglass-top"></i>
+                                        </span>
+                                        <span class="text-dark">open: {{cafeteria.opening_hour}}</span>
+
+                                    </div>
+                                    <div>
+                                        <span class="icon-shape icon-sm bg-light-primary text-primary rounded-1">
+                                            <i class="bi bi-hourglass-bottom"></i>
+                                        </span>
+                                        <span class="text-dark">close: {{cafeteria.closing_hour}}</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </a>
                 </div>
                 {% endfor %}
             </div>
