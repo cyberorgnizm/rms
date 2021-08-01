@@ -94,7 +94,19 @@
                     </h5>
                 </div>
                 <h5 class="card-title text-muted">{{menu.menu_type|title}}</h5>
-                <h6 class="card-subtitle mb-2 text-muted">{{menu.price}}</h6>
+                <h6 class="card-subtitle mb-2 text-muted">
+                  <span
+                  class="
+                    icon-shape icon-sm
+                    bg-light-primary
+                    text-primary
+                    rounded-1
+                  "
+                >
+                  <i class="bi bi-cash-coin"></i>
+                </span>
+                &#8358;{{menu.price}}
+                </h6>
                 <p class="card-text text-truncate">
                     <small>{{menu.description}}</small>
                 </p>

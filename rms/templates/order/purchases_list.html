@@ -32,7 +32,7 @@
           {% for order in orders %}
           <tr>
             <td class="align-middle">
-                <a href="{% url 'purchase_detail' order.order_id %}">{{order.order_id}}</a>
+                <a href="{% url 'orders:purchase_detail' order.order_id %}">{{order.order_id}}</a>
             </td>
             {% if user.is_worker %}
             <td class="align-middle">
@@ -61,7 +61,7 @@
               {% endif %}
             </td>
             <td class="align-middle text-dark">
-              {{order.total_price}}
+              &#8358;{{order.total_price}}
             </td>
           </tr>
           {% endfor %}

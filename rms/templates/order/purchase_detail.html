@@ -9,15 +9,15 @@
       Order ID: {{order.order_id}}
     </h3>
   </div>
-  <span class="fw-bold d-block text-uppercase mt-2">Status: {{order.status}}</span>
-  <span class="fw-bold d-block text-uppercase mt-2">Cafeteria: {{order.cafeteria}}</span>
+  <span class="d-block text-dark text-uppercase mt-2">Status: {{order.status}}</span>
+  <span class="d-block text-dark text-uppercase mt-2">Cafeteria: {{order.cafeteria}}</span>
   {% if order.delivery_date %}
-  <span class="fw-bold d-block text-uppercase mt-2">Delivery Date: {{order.delivery_date}}</span>
+  <span class="d-block text-dark text-uppercase mt-2">Delivery Date: {{order.delivery_date}}</span>
   {% endif %}
-  <span class="fw-bold d-block text-uppercase mt-2">Delivery Mode: {{order.delivery_mode}}</span>
-  <span class="fw-bold d-block text-uppercase mt-2">Delivery Address: {{order.delivery_address}}</span>
-  <span class="fw-bold d-block text-uppercase mt-2">Line Count: {{order.lines.count}}</span>
-  <span class="fw-bold d-block text-uppercase mt-2">Total Price: {{order.total_price}}</span>
+  <span class="d-block text-dark text-uppercase mt-2">Delivery Mode: {{order.delivery_mode}}</span>
+  <span class="d-block text-dark text-uppercase mt-2">Delivery Address: {{order.delivery_address}}</span>
+  <span class="d-block text-dark text-uppercase mt-2">Line Count: {{order.lines.count}}</span>
+  <span class="d-block text-dark text-uppercase mt-2">Total Price: &#8358;{{order.total_price}}</span>
   <table class="table text-nowrap mb-5 mt-5">
     <thead class="table-light">
       <tr>
@@ -31,12 +31,12 @@
       {% for line in order.lines.all %}
       <tr>
         <td class="align-middle">
-          <a href="{% url 'restaurants:cafeteria-detail' line.menu.cafeteria.slug %}">
+          <a href="{% url 'restaurants:menu-detail' line.menu.cafeteria.slug line.menu.slug %}">
             <img src="{{line.menu.image.url}}" alt="" class="avatar rounded me-3" style="object-fit: cover"> <span class="line-name">{{line.menu}}</span>
           </a>
         </td>
         <td class="align-middle">{{line.quantity}}</td>
-        <td class="align-middle">{{line.total_price}}</td>
+        <td class="align-middle">&#8358;{{line.total_price}}</td>
         <td class="align-middle">
           {% if not line.is_ready and order.status == "pending" %}
             <span><i class="icon-xs" data-feather="watch"></i>processing...</span>
