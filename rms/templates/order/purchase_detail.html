@@ -1,4 +1,5 @@
 {% extends 'order/base.html' %} {% load cart_tag %} {% block main %}
+{% csrf_token %}
 <div class="container">
   {% if object %}
   <div class="text-center mt-15 mb-5">
@@ -9,15 +10,112 @@
       Order ID: {{order.order_id}}
     </h3>
   </div>
-  <span class="d-block text-dark text-uppercase mt-2">Status: {{order.status}}</span>
-  <span class="d-block text-dark text-uppercase mt-2">Cafeteria: {{order.cafeteria}}</span>
-  {% if order.delivery_date %}
-  <span class="d-block text-dark text-uppercase mt-2">Delivery Date: {{order.delivery_date}}</span>
-  {% endif %}
-  <span class="d-block text-dark text-uppercase mt-2">Delivery Mode: {{order.delivery_mode}}</span>
-  <span class="d-block text-dark text-uppercase mt-2">Delivery Address: {{order.delivery_address}}</span>
-  <span class="d-block text-dark text-uppercase mt-2">Line Count: {{order.lines.count}}</span>
-  <span class="d-block text-dark text-uppercase mt-2">Total Price: &#8358;{{order.total_price}}</span>
+  <div class="row">
+    <div class="col-md-6">
+      <span class="d-block text-dark text-uppercase mt-2"
+        >Status: {{order.status}}</span
+      >
+      <span class="d-block text-dark text-uppercase mt-2"
+        >Cafeteria: {{order.cafeteria}}</span
+      >
+      {% if order.delivery_date %}
+      <span class="d-block text-dark text-uppercase mt-2"
+        >Delivery Date: {{order.delivery_date}}</span
+      >
+      {% endif %}
+      <span class="d-block text-dark text-uppercase mt-2"
+        >Delivery Mode: {{order.delivery_mode}}</span
+      >
+      <span class="d-block text-dark text-uppercase mt-2"
+        >Delivery Address: {{order.delivery_address}}</span
+      >
+      <span class="d-block text-dark text-uppercase mt-2"
+        >Line Count: {{order.lines.count}}</span
+      >
+      <span class="d-block text-dark text-uppercase mt-2"
+        >Total Price: &#8358;{{order.total_price}}</span
+      >
+    </div>
+    {% if user.is_worker and user.worker.worker_role == 'waiter' %}
+    <div class="col-md-6">
+      <div class="d-flex justify-content-end align-items-center h-100">
+        {% if order.status == 'pending' %}
+        <form
+          action="{% url 'orders:purchase_update' order.order_id %}"
+          method="post"
+        >
+          {% csrf_token %} {{approve_form.as_p}}
+          <div class="col-12">
+            <div class="d-flex justify-content-between w-100">
+              <button type="submit" class="btn btn-sm btn-outline-primary">
+                Approve Order
+              </button>
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-danger"
+                data-bs-toggle="modal"
+                data-bs-target="#cancelOrder"
+              >
+                Cancel Order
+              </button>
+            </div>
+          </div>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Cancel Order Modal -->
+    <div
+      class="modal fade"
+      id="cancelOrder"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="cancelOrderTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="cancelOrderTitle">
+              Cancel Order: {{order.order_id}}
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="alert alert-warning" role="alert">
+              <h4 class="alert-heading">Warning</h4>
+              <p>
+                <small>
+                  Please note that after this order is marked as cancelled, it
+                  cannot be reversed, all payments made by student should be
+                  refunded if this order is marked as cancelled.
+                </small>
+              </p>
+            </div>
+            <form
+              action="{% url 'orders:purchase_update' order.order_id %}"
+              method="post"
+            >
+              {% csrf_token %} {{reject_form.as_p}}
+              <div class="form-submit mt-3">
+                <button type="submit" class="btn btn-sm btn-primary">
+                  Submit
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+  <!-- Purhcase lines -->
   <table class="table text-nowrap mb-5 mt-5">
     <thead class="table-light">
       <tr>
@@ -25,59 +123,93 @@
         <th>Quantity</th>
         <th>Total Price</th>
         <th>State</th>
+        {% if user.is_worker and user.worker.worker_role == 'chef' %}
+        <th></th>
+        {% endif %}
       </tr>
     </thead>
     <tbody>
       {% for line in order.lines.all %}
       <tr>
         <td class="align-middle">
-          <a href="{% url 'restaurants:menu-detail' line.menu.cafeteria.slug line.menu.slug %}">
-            <img src="{{line.menu.image.url}}" alt="" class="avatar rounded me-3" style="object-fit: cover"> <span class="line-name">{{line.menu}}</span>
+          <a
+            href="{% url 'restaurants:menu-detail' line.menu.cafeteria.slug line.menu.slug %}"
+          >
+            <img
+              src="{{line.menu.image.url}}"
+              alt=""
+              class="avatar rounded me-3"
+              style="object-fit: cover"
+            />
+            <span class="line-name">{{line.menu}}</span>
           </a>
         </td>
         <td class="align-middle">{{line.quantity}}</td>
         <td class="align-middle">&#8358;{{line.total_price}}</td>
         <td class="align-middle">
           {% if not line.is_ready and order.status == "pending" %}
-            <span><i class="icon-xs" data-feather="watch"></i>processing...</span>
+          <span><i class="icon-xs" data-feather="watch"></i>processing...</span>
           {% elif not line.is_ready and order.status == "cancelled" %}
-            <span class="text-danger">canceled <i class="icon-xs" data-feather="delete"></i></span>
+          <span class="text-danger"
+            >canceled <i class="icon-xs" data-feather="delete"></i
+          ></span>
           {% else %}
-          <span class="text-success">ready <i class="icon-xs" data-feather="check"></i></span>
+          <span class="text-success"
+            >ready <i class="icon-xs" data-feather="check"></i
+          ></span>
           {% endif %}
         </td>
+        {% if user.is_worker and user.worker.worker_role == 'chef' %}
+        <td class="align-middle">
+          {% if not line.is_ready %}
+          <button
+            class="btn btn-sm btn-outline-primary"
+            onclick="processLine({{line.id}})"
+          >
+            Mark as ready
+          </button>
+          {% else %}
+          <button class="btn btn-sm btn-outline-danger" onclick="processLine({{line.id}})">
+            Mark as not ready
+          </button>
+          {% endif %}
+        </td>
+        {% endif %}
       </tr>
       {% endfor %}
     </tbody>
   </table>
-  {% if user.is_worker %}
-  <div class="d-flex justify-content-end">
-    <form method="post">
-      {% csrf_token %}
-      {% if order.status == "pending" %}
-      <input type="checkbox" name="approve" id="approve-checkbox" class="form-check-input"> <label for="approve-checkbox" class="me-3"><small>Mark all as complete and approve</small></label>
-      {% elif order.status == "cancelled" %}
-      {% else %}
-      <input type="checkbox" name="reject" id="reject-checkbox" class="form-check-input"> <label for="reject-checkbox" class="me-3"><small>Mark all as incomplete and cancel</small></label>
-      {% endif %}
-      {% if order.status == "pending" %}
-      <button type="submit" class="btn btn-sm btn-primary">
-        Approve
-      </button>
-      {% elif order.status == "cancelled" %}
-      {% else %}
-      <button type="submit" class="btn btn-sm btn-danger">
-        Cancel
-      </button>
-      {% endif %}
-    </form>
-  </div>
-  {% endif %}
   {% else %}
   <div class="text-center mt-10">
     <i class="icon-xxl" data-feather="shopping-cart"></i>
-    <p class="mt-5">You have 0 items in your cart, please add items before you checkout</p>
+    <p class="mt-5">
+      You have 0 items in your cart, please add items before you checkout
+    </p>
   </div>
   {% endif %}
 </div>
+{% endblock %} {% block scripts %}
+<script>
+  function processLine(id) {
+    var csrftoken = document.querySelector("[name=csrfmiddlewaretoken]").value;
+    var request = new Request(window.location.href + "process-line/" + id, {
+      headers: {
+        "X-CSRFToken": csrftoken,
+        "Content-Type": "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+      },
+    });
+
+    fetch(request, {
+      method: "PUT",
+      credentials: "same-origin",
+    })
+      .then(function (response) {
+        window.location.reload();
+      })
+      .catch(function (error) {
+        window.location.reload();
+      });
+  }
+</script>
 {% endblock %}

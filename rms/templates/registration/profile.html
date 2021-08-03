@@ -1,23 +1,18 @@
-{% extends 'registration/base.html'%} {% load static %} 
-{% block stylesheets %}
-<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+{% extends 'registration/base.html'%} {% load static %} {% block stylesheets %}
+<link rel="stylesheet" href="{% static 'css/styles.css' %}" />
 {% endblock %}
 <!-- Contents -->
-{% block content %}
+{% block main %}
 <div>
-  <div class="header @@classList">
-    <!-- navbar -->
-    {% include 'pages/includes/navbar.html' %}
-  </div>
   <!-- Container fluid -->
-  <div class="container-fluid px-6 py-4">
+  <div class="container-fluid px-6 py-4 mt-10">
     <div class="row">
       <div class="col-lg-12 col-md-12 col-12">
         <!-- Page header -->
         <div>
           <div class="border-bottom pb-4 mb-4">
             <div class="mb-2 mb-lg-0">
-              <h3 class="mb-0 fw-bold">Overview</h3>
+              <h3 class="mb-0 fw-bold">Profile</h3>
             </div>
           </div>
         </div>
@@ -26,10 +21,7 @@
     <div class="row align-items-center">
       <div class="col-xl-12 col-lg-12 col-md-12 col-12">
         <!-- Bg -->
-        <div
-          class="pt-15 rounded-top"
-          id="profile-bg"
-        ></div>
+        <div class="pt-15 rounded-top" id="profile-bg"></div>
         <div class="bg-white rounded-bottom smooth-shadow-sm">
           <div
             class="
@@ -121,11 +113,23 @@
           <!-- nav -->
           <ul class="nav nav-lt-tab px-4" id="pills-tab" role="tablist">
             <li class="nav-item">
-              <a class="nav-link active" data-bs-toggle="pill" href="#pills-overview">Overview</a>
+              <a
+                class="nav-link active"
+                data-bs-toggle="pill"
+                href="#pills-overview"
+                >Overview</a
+              >
             </li>
-            {% if user.is_student %}
+            {% if user.is_student or user.is_worker %}
             <li class="nav-item">
-              <a class="nav-link" data-bs-toggle="pill" href="#pills-orders">Orders</a>
+              <a class="nav-link" data-bs-toggle="pill" href="#pills-orders"
+                >Orders</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-bs-toggle="pill" href="#pills-invoices"
+                >Invoices</a
+              >
             </li>
             {% endif %}
           </ul>
@@ -148,7 +152,7 @@
               <!-- card body -->
               <div class="card-body">
                 <!-- card title -->
-                <h4 class="card-title mb-4">About Me</h4>
+                <h4 class="card-title text-center mb-4">About Me</h4>
                 {% if user.bio %}
                 <span class="text-uppercase fw-medium text-dark fs-5 ls-2"
                   >Bio</span
@@ -158,32 +162,35 @@
                 {% endif %}
                 <!-- row -->
                 <div class="row">
+                  {% if user.is_superuser or user.is_worker %}
                   <div class="col-12 mb-5">
                     <!-- text -->
                     <h6 class="text-uppercase fs-5 ls-2">Position</h6>
                     <p class="mb-0">
-                      {% if user.is_superuser %} Admin {% else %}
-                      {{user.worker.role}} {% endif %}
+                      {% if user.is_superuser %} Admin {% elif user.is_worker %}
+                      {{user.worker.woker_role}} {% endif %}
                     </p>
                   </div>
+                  {% endif %}
                   {% if user.phone %}
-                  <div class="col-6 mb-5">
+                  <div class="col-12 mb-5">
                     <h6 class="text-uppercase fs-5 ls-2">Phone</h6>
                     <p class="mb-0">{{user.phone}}</p>
                   </div>
-                  {% endif %} {% if user.date_of_birth %}
-                  <div class="col-6 mb-5">
+                  {% endif %} 
+                  {% if user.date_of_birth %}
+                  <div class="col-12 mb-5">
                     <h6 class="text-uppercase fs-5 ls-2">Date of Birth</h6>
                     <p class="mb-0">01.10.1997</p>
                   </div>
                   {% endif %}
-                  <div class="col-6">
+                  <div class="col-12 mb-5">
                     <h6 class="text-uppercase fs-5 ls-2">Email</h6>
                     <p class="mb-0">{{user.email}}</p>
                   </div>
                   {% if user.student %}
-                  <div class="col-6">
-                    <h6 class="text-uppercase fs-5 ls-2">Location</h6>
+                  <div class="col-12">
+                    <h6 class="text-uppercase fs-5 ls-2">Address</h6>
                     <p class="mb-0">{{user.student_address}}</p>
                   </div>
                   {% endif %}
@@ -191,430 +198,156 @@
               </div>
             </div>
           </div>
+          {% if user.is_student %}
+            <div class="col-xl-6 col-lg-12 col-md-12 col-12 mb-6">
+              <!-- card -->
+              <div class="card h-100">
+                <!-- card body -->
+                <div class="card-body">
+                  <!-- card title -->
+                  <h4 class="card-title text-center mb-4">Info</h4>
+                  <div class="row">
+                    <div class="col-12 mb-5">
+                      <!-- text -->
+                      <h6 class="text-uppercase fs-5 ls-2">Metriculation Number</h6>
+                      <p class="mb-0">
+                        {{user.student.matric}}
+                      </p>
+                    </div>
+                    <div class="col-12 mb-5">
+                      <!-- text -->
+                      <h6 class="text-uppercase fs-5 ls-2">Gender</h6>
+                      <p class="mb-0">
+                        {% if user.student.gender == 'M' %}
+                          Male
+                        {% else %}
+                          Female
+                        {% endif %}
+                      </p>
+                    </div>
+                    <div class="col-12 mb-5">
+                      <!-- text -->
+                      <h6 class="text-uppercase fs-5 ls-2">Level</h6>
+                      <p class="mb-0">
+                        {{user.student.level}}
+                      </p>
+                    </div>
+                    <div class="col-12 mb-5">
+                      <!-- text -->
+                      <h6 class="text-uppercase fs-5 ls-2">Department</h6>
+                      <p class="mb-0">
+                        {{user.student.department}}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endif %}
+          {% if user.is_worker %}
           <div class="col-xl-6 col-lg-12 col-md-12 col-12 mb-6">
             <!-- card -->
             <div class="card">
               <!-- card body -->
               <div class="card-body">
                 <!-- card title -->
-                <h4 class="card-title mb-4">Recent Orders</h4>
+                <h4 class="card-title mb-4">Organization</h4>
                 <div
                   class="
                     d-md-flex
+                    flex-column
                     justify-content-between
                     align-items-center
                     mb-4
                   "
                 >
-                  <div class="d-flex align-items-center">
-                    <div>
-                      <div class="icon-shape icon-lg border p-4 rounded-1">
-                        <img
-                          src="{% static 'images/brand/slack-logo.svg' %}"
-                          alt=""
-                        />
-                      </div>
+                  <div class="d-flex flex-column justify-content-center align-items-center">
+                    <div class="mb-4">
+                      <img
+                        class="avatar avatar-xxl rounded-circle"
+                        style="object-fit: cover;"
+                        src="{{user.worker.cafeteria.image.url}}"
+                        alt=""
+                      />
                     </div>
                     <!-- text -->
                     <div class="ms-3">
                       <h5 class="mb-1">
-                        <a href="#" class="text-inherit"
-                          >Slack Figma Design UI</a
+                        <a href="{% url 'restaurants:cafeteria-detail' user.worker.cafeteria.slug  %}" class="text-inherit"
+                          >{{user.worker.cafeteria}}</a
                         >
                       </h5>
                       <p class="mb-0 fs-5 text-muted">
-                        Project description and details about...
+                        {{user.worker.cafeteria.address}}
                       </p>
-                    </div>
-                  </div>
-                  <div class="d-flex align-items-center ms-10 ms-md-0 mt-3">
-                    <!-- avatar group -->
-                    <div class="avatar-group me-2">
-                      <!-- img -->
-                      <span class="avatar avatar-sm">
-                        <img
-                          alt="avatar"
-                          src="{% static 'images/avatar/avatar-1.jpg' %}"
-                          class="rounded-circle"
-                        />
-                      </span>
-                      <!-- img -->
-                      <span class="avatar avatar-sm">
-                        <img
-                          alt="avatar"
-                          src="{% static 'images/avatar/avatar-2.jpg' %}"
-                          class="rounded-circle"
-                        />
-                      </span>
-                      <!-- img -->
-                      <span class="avatar avatar-sm">
-                        <img
-                          alt="avatar"
-                          src="{% static 'images/avatar/avatar-3.jpg' %}"
-                          class="rounded-circle"
-                        />
-                      </span>
-                    </div>
-                    <div>
-                      <!-- dropdown -->
-                      <div class="dropdown dropstart">
-                        <a
-                          href="#"
-                          class="text-muted text-primary-hover"
-                          id="dropdownprojectOne"
-                          data-bs-toggle="dropdown"
-                          aria-haspopup="true"
-                          aria-expanded="false"
-                        >
-                          <i data-feather="more-vertical" class="icon-xxs"></i>
-                        </a>
-                        <div
-                          class="dropdown-menu"
-                          aria-labelledby="dropdownprojectOne"
-                        >
-                          <a class="dropdown-item" href="#">Action</a>
-                          <a class="dropdown-item" href="#">Another action</a>
-                          <a class="dropdown-item" href="#"
-                            >Something else here</a
-                          >
-                        </div>
-                      </div>
                     </div>
                   </div>
                 </div>
-                <div
-                  class="
-                    d-md-flex
-                    justify-content-between
-                    align-items-center
-                    mb-4
-                  "
-                >
-                  <div class="d-flex align-items-center">
-                    <div>
-                      <!-- icon shape -->
-                      <div class="icon-shape icon-lg border p-4 rounded-1">
-                        <img
-                          src="{% static 'images/brand/3dsmax-logo.svg' %}"
-                          alt=""
-                        />
-                      </div>
-                    </div>
-                    <!-- text -->
-                    <div class="ms-3">
-                      <h5 class="mb-1">
-                        <a href="#" class="text-inherit">Design 3d Character</a>
-                      </h5>
-                      <p class="mb-0 fs-5 text-muted">
-                        Project description and details about...
-                      </p>
-                    </div>
-                  </div>
+              </div>
+            </div>
+            {% if user.is_superuser %}
+            <div class="col-xl-6 col-lg-12 col-md-12 col-12 mb-6">
+              <div class="row">
+                <div class="col-12">
+                  <!-- card -->
+                  <div class="card">
+                    <!-- card body -->
+                    <div class="card-body">
+                      <!-- card title -->
+                      <h4 class="card-title mb-4">Activity Feed</h4>
 
-                  <div class="d-flex align-items-center ms-10 ms-md-0 mt-3">
-                    <!-- avatar group -->
-                    <div class="avatar-group me-2">
-                      <span class="avatar avatar-sm">
+                      <div class="d-flex mb-5">
                         <!-- img -->
-                        <img
-                          alt="avatar"
-                          src="{% static 'images/avatar/avatar-4.jpg' %}"
-                          class="rounded-circle"
-                        />
-                      </span>
-                      <span class="avatar avatar-sm">
-                        <!-- img -->
-                        <img
-                          alt="avatar"
-                          src="{% static 'images/avatar/avatar-5.jpg' %}"
-                          class="rounded-circle"
-                        />
-                      </span>
-                      <span class="avatar avatar-sm">
-                        <!-- img -->
-                        <img
-                          alt="avatar"
-                          src="{% static 'images/avatar/avatar-6.jpg' %}"
-                          class="rounded-circle"
-                        />
-                      </span>
-                    </div>
-                    <div>
-                      <!-- dropdown -->
-                      <div class="dropdown dropstart">
-                        <a
-                          href="#"
-                          class="text-muted text-primary-hover"
-                          id="dropdownprojectTwo"
-                          data-bs-toggle="dropdown"
-                          aria-haspopup="true"
-                          aria-expanded="false"
-                        >
-                          <i data-feather="more-vertical" class="icon-xxs"></i>
-                        </a>
-                        <div
-                          class="dropdown-menu"
-                          aria-labelledby="dropdownprojectTwo"
-                        >
-                          <a class="dropdown-item" href="#">Action</a>
-                          <a class="dropdown-item" href="#">Another action</a>
-                          <a class="dropdown-item" href="#"
-                            >Something else here</a
-                          >
+                        <div>
+                          <img
+                            src="{% static 'images/avatar/avatar-6.jpg' %}"
+                            class="rounded-circle avatar-md"
+                            alt=""
+                          />
+                        </div>
+                        <!-- content -->
+                        <div class="ms-3">
+                          <h5 class="mb-1">Dianna Smiley</h5>
+                          <p class="text-muted mb-2">
+                            Just create a new Project in Dashui...
+                          </p>
+                          <p class="fs-5 mb-0">2m ago</p>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="
-                    d-md-flex
-                    justify-content-between
-                    align-items-center
-                    mb-4
-                  "
-                >
-                  <div class="d-flex align-items-center">
-                    <div>
-                      <!-- icon shape -->
-                      <div class="icon-shape icon-lg border p-4 rounded-1">
-                        <img
-                          src="{% static 'images/brand/github-logo.svg' %} "
-                          alt=""
-                        />
-                      </div>
-                    </div>
-                    <!-- text -->
-                    <div class="ms-3">
-                      <h5 class="mb-1">
-                        <a href="#" class="text-inherit">Github Development</a>
-                      </h5>
-                      <p class="mb-0 fs-5 text-muted">
-                        Project description and details about...
-                      </p>
-                    </div>
-                  </div>
-                  <div class="d-flex align-items-center ms-10 ms-md-0 mt-3">
-                    <!-- avatar group -->
-                    <div class="avatar-group me-2">
-                      <span class="avatar avatar-sm">
+                      <div class="d-flex mb-5">
                         <!-- img -->
-                        <img
-                          alt="avatar"
-                          src="{% static 'images/avatar/avatar-7.jpg' %}"
-                          class="rounded-circle"
-                        />
-                      </span>
-                      <span class="avatar avatar-sm">
-                        <!-- img -->
-                        <img
-                          alt="avatar"
-                          src="{% static 'images/avatar/avatar-8.jpg' %}"
-                          class="rounded-circle"
-                        />
-                      </span>
-                      <span class="avatar avatar-sm">
-                        <!-- img -->
-                        <img
-                          alt="avatar"
-                          src="{% static 'images/avatar/avatar-9.jpg' %}"
-                          class="rounded-circle"
-                        />
-                      </span>
-                    </div>
-                    <div>
-                      <!-- dropdown -->
-                      <div class="dropdown dropstart">
-                        <a
-                          href="#"
-                          class="text-muted text-primary-hover"
-                          id="dropdownprojectThree"
-                          data-bs-toggle="dropdown"
-                          aria-haspopup="true"
-                          aria-expanded="false"
-                        >
-                          <i data-feather="more-vertical" class="icon-xxs"></i>
-                        </a>
-                        <div
-                          class="dropdown-menu"
-                          aria-labelledby="dropdownprojectThree"
-                        >
-                          <a class="dropdown-item" href="#">Action</a>
-                          <a class="dropdown-item" href="#">Another action</a>
-                          <a class="dropdown-item" href="#"
-                            >Something else here</a
-                          >
+                        <div>
+                          <img
+                            src="{% static 'images/avatar/avatar-7.jpg' %}"
+                            class="rounded-circle avatar-md"
+                            alt=""
+                          />
+                        </div>
+                        <!-- content -->
+                        <div class="ms-3">
+                          <h5 class="mb-1">Irene Hargrove</h5>
+                          <p class="text-muted mb-2">
+                            Comment on Bootstrap Tutorial Says Hi, I m irene...
+                          </p>
+                          <p class="fs-5 mb-0">1hour ago</p>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="
-                    d-md-flex
-                    justify-content-between
-                    align-items-center
-                    mb-4
-                  "
-                >
-                  <div class="d-flex align-items-center">
-                    <!-- icon shape -->
-                    <div>
-                      <div class="icon-shape icon-lg border p-4 rounded-1">
-                        <img
-                          src="{% static 'images/brand/dropbox-logo.svg' %}"
-                          alt=""
-                        />
-                      </div>
-                    </div>
-                    <!-- text -->
-                    <div class="ms-3">
-                      <h5 class="mb-1">
-                        <a href="#" class="text-inherit"
-                          >Dropbox Design System</a
-                        >
-                      </h5>
-                      <p class="mb-0 fs-5 text-muted">
-                        Project description and details about...
-                      </p>
-                    </div>
-                  </div>
-                  <div class="d-flex align-items-center ms-10 ms-md-0 mt-3">
-                    <!-- avatar group -->
-                    <div class="avatar-group me-2">
-                      <!-- img -->
-                      <span class="avatar avatar-sm">
-                        <img
-                          alt="avatar"
-                          src="{% static 'images/avatar/avatar-10.jpg' %}"
-                          class="rounded-circle"
-                        />
-                      </span>
-                      <!-- img -->
-                      <span class="avatar avatar-sm">
-                        <img
-                          alt="avatar"
-                          src="{% static 'images/avatar/avatar-11.jpg' %}"
-                          class="rounded-circle"
-                        />
-                      </span>
-                      <!-- img -->
-                      <span class="avatar avatar-sm">
-                        <img
-                          alt="avatar"
-                          src="{% static 'images/avatar/avatar-12.jpg' %}"
-                          class="rounded-circle"
-                        />
-                      </span>
-                    </div>
-                    <div>
-                      <!-- dropdown -->
-                      <div class="dropdown dropstart">
-                        <a
-                          href="#"
-                          class="text-muted text-primary-hover"
-                          id="dropdownprojectFour"
-                          data-bs-toggle="dropdown"
-                          aria-haspopup="true"
-                          aria-expanded="false"
-                        >
-                          <i data-feather="more-vertical" class="icon-xxs"></i>
-                        </a>
-                        <div
-                          class="dropdown-menu"
-                          aria-labelledby="dropdownprojectFour"
-                        >
-                          <a class="dropdown-item" href="#">Action</a>
-                          <a class="dropdown-item" href="#">Another action</a>
-                          <a class="dropdown-item" href="#"
-                            >Something else here</a
-                          >
+                      <div class="d-flex">
+                        <!-- img -->
+                        <div>
+                          <img
+                            src="{% static 'images/avatar/avatar-9.jpg' %}"
+                            class="rounded-circle avatar-md"
+                            alt=""
+                          />
                         </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="d-md-flex justify-content-between align-items-center"
-                >
-                  <div class="d-flex align-items-center">
-                    <!-- icon shape -->
-                    <div>
-                      <div
-                        class="
-                          icon-shape icon-lg
-                          border
-                          p-4
-                          rounded-1
-                          bg-primary
-                        "
-                      >
-                        <img
-                          src="{% static 'images/brand/layers-logo.svg' %}"
-                          alt=""
-                        />
-                      </div>
-                    </div>
-                    <!-- text -->
-                    <div class="ms-3">
-                      <h5 class="mb-1">
-                        <a href="#" class="text-inherit">Project Management</a>
-                      </h5>
-                      <p class="mb-0 fs-5 text-muted">
-                        Project description and details about...
-                      </p>
-                    </div>
-                  </div>
-                  <div class="d-flex align-items-center ms-10 ms-md-0 mt-3">
-                    <!-- avatar group -->
-                    <div class="avatar-group me-2">
-                      <!-- img -->
-                      <span class="avatar avatar-sm">
-                        <img
-                          alt="avatar"
-                          src="{% static 'images/avatar/avatar-13.jpg' %}"
-                          class="rounded-circle"
-                        />
-                      </span>
-                      <!-- img -->
-                      <span class="avatar avatar-sm">
-                        <img
-                          alt="avatar"
-                          src="{% static 'images/avatar/avatar-14.jpg' %}"
-                          class="rounded-circle"
-                        />
-                      </span>
-                      <!-- img -->
-                      <span class="avatar avatar-sm">
-                        <img
-                          alt="avatar"
-                          src="{% static 'images/avatar/avatar-15.jpg' %}"
-                          class="rounded-circle"
-                        />
-                      </span>
-                    </div>
-                    <div>
-                      <!-- dropdown -->
-                      <div class="dropdown dropstart">
-                        <a
-                          href="#"
-                          class="text-muted text-primary-hover"
-                          id="dropdownprojectFoufive"
-                          data-bs-toggle="dropdown"
-                          aria-haspopup="true"
-                          aria-expanded="false"
-                        >
-                          <i data-feather="more-vertical" class="icon-xxs"></i>
-                        </a>
-                        <div
-                          class="dropdown-menu"
-                          aria-labelledby="dropdownprojectFoufive"
-                        >
-                          <a class="dropdown-item" href="#">Action</a>
-                          <a class="dropdown-item" href="#">Another action</a>
-                          <a class="dropdown-item" href="#"
-                            >Something else here</a
-                          >
+                        <!-- content -->
+                        <div class="ms-3">
+                          <h5 class="mb-1">Trevor Bradley</h5>
+                          <p class="text-muted mb-2">
+                            Just share your article on Social Media..
+                          </p>
+                          <p class="mb-0 fs-5 text-muted">2month ago</p>
                         </div>
                       </div>
                     </div>
@@ -622,153 +355,87 @@
                 </div>
               </div>
             </div>
+            {% endif %}
           </div>
-          <div class="col-xl-12 col-lg-12 col-md-12 col-12 mb-6">
-            <div class="row">
-              <div class="col-12">
-                <!-- card -->
-                <div class="card">
-                  <!-- card body -->
-                  <div class="card-body">
-                    <!-- card title -->
-                    <h4 class="card-title mb-4">Activity Feed</h4>
-
-                    <div class="d-flex mb-5">
-                      <!-- img -->
+          {% endif %} 
+        </div>
+      </div>
+      {% if user.is_student or user.is_worker %}
+        <div
+          class="tab-pane fade"
+          id="pills-orders"
+          role="tabpanel"
+          aria-labelledby="pills-orders-tab"
+        >
+          <!-- row -->
+          <div class="row">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-12 mb-6">
+              <!-- card -->
+              <div class="card">
+                <!-- card body -->
+                <div class="card-body">
+                  <!-- card title -->
+                  <h4 class="card-title mb-4">Orders</h4>
+                  {% for order in orders %}
+                  <div
+                    class="
+                      d-md-flex
+                      justify-content-between
+                      align-items-center
+                      mb-4
+                    "
+                  >
+                    <div class="d-flex align-items-center">
                       <div>
-                        <img
-                          src="{% static 'images/avatar/avatar-6.jpg' %}"
-                          class="rounded-circle avatar-md"
-                          alt=""
-                        />
+                        <div class="icon-shape icon-lg border p-4 rounded-1">
+                          <img
+                            class="avatar avatar-md"
+                            src="{{order.cafeteria.image.url}}"
+                            alt="{{order.cafeteria}}"
+                          />
+                        </div>
                       </div>
-                      <!-- content -->
+                      <!-- text -->
                       <div class="ms-3">
-                        <h5 class="mb-1">Dianna Smiley</h5>
-                        <p class="text-muted mb-2">
-                          Just create a new Project in Dashui...
+                        <h5 class="mb-1">
+                          <a
+                            href="{% url 'orders:purchase_detail' order.order_id %}"
+                            class="text-inherit text-uppercase"
+                            >Order ID: {{order.order_id}}</a
+                          >
+                        </h5>
+                        <p class="mb-0 fs-5 text-muted">
+                          Status: {{order.status}}
                         </p>
-                        <p class="fs-5 mb-0">2m ago</p>
+                        <p class="mb-0 fs-5 text-muted">
+                          Date created: {{order.date_created}}
+                        </p>
                       </div>
                     </div>
-                    <div class="d-flex mb-5">
-                      <!-- img -->
-                      <div>
-                        <img
-                          src="{% static 'images/avatar/avatar-7.jpg' %}"
-                          class="rounded-circle avatar-md"
-                          alt=""
-                        />
-                      </div>
-                      <!-- content -->
-                      <div class="ms-3">
-                        <h5 class="mb-1">Irene Hargrove</h5>
-                        <p class="text-muted mb-2">
-                          Comment on Bootstrap Tutorial Says Hi, I m irene...
-                        </p>
-                        <p class="fs-5 mb-0">1hour ago</p>
-                      </div>
-                    </div>
-                    <div class="d-flex">
-                      <!-- img -->
-                      <div>
-                        <img
-                          src="{% static 'images/avatar/avatar-9.jpg' %}"
-                          class="rounded-circle avatar-md"
-                          alt=""
-                        />
-                      </div>
-                      <!-- content -->
-                      <div class="ms-3">
-                        <h5 class="mb-1">Trevor Bradley</h5>
-                        <p class="text-muted mb-2">
-                          Just share your article on Social Media..
-                        </p>
-                        <p class="mb-0 fs-5 text-muted">2month ago</p>
+                    <div class="d-flex align-items-center ms-10 ms-md-0 mt-3">
+                      <!-- avatar group -->
+                      <div class="avatar-group me-2">
+                        {% for line in order.lines.all %}
+                        <!-- img -->
+                        <span class="avatar avatar-md">
+                          <img
+                            alt="avatar"
+                            src="{{line.menu.image.url}}"
+                            class="rounded-circle"
+                          />
+                        </span>
+                        {% endfor %}
                       </div>
                     </div>
                   </div>
+                  {% endfor %}
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      {% if user.is_student %}
-      <div
-        class="tab-pane fade"
-        id="pills-orders"
-        role="tabpanel"
-        aria-labelledby="pills-orders-tab"
-      >
-        <!-- row -->
-        <div class="row">
-          
-          <div class="col-xl-12 col-lg-12 col-md-12 col-12 mb-6">
-            <!-- card -->
-            <div class="card">
-              <!-- card body -->
-              <div class="card-body">
-                <!-- card title -->
-                <h4 class="card-title mb-4">Recent Orders</h4>
-                {% for order in orders %}
-                <div
-                  class="
-                    d-md-flex
-                    justify-content-between
-                    align-items-center
-                    mb-4
-                  "
-                >
-                  <div class="d-flex align-items-center">
-                    <div>
-                      <div class="icon-shape icon-lg border p-4 rounded-1">
-                        <img
-                          class="avatar avatar-md"
-                          src="{{order.cafeteria.image.url}}"
-                          alt="{{order.cafeteria}}"
-                        />
-                      </div>
-                    </div>
-                    <!-- text -->
-                    <div class="ms-3">
-                      <h5 class="mb-1">
-                        <a href="{% url 'orders:purchase_detail' order.order_id %}" class="text-inherit text-uppercase"
-                          >Order ID: {{order.order_id}}</a
-                        >
-                      </h5>
-                      <p class="mb-0 fs-5 text-muted">
-                        Status: {{order.status}}
-                      </p>
-                      <p class="mb-0 fs-5 text-muted">
-                        Date created: {{order.date_created}}
-                      </p>
-                    </div>
-                  </div>
-                  <div class="d-flex align-items-center ms-10 ms-md-0 mt-3">
-                    <!-- avatar group -->
-                    <div class="avatar-group me-2">
-                    {% for line in order.lines.all %}
-                      <!-- img -->
-                      <span class="avatar avatar-md">
-                        <img
-                          alt="avatar"
-                          src="{{line.menu.image.url}}"
-                          class="rounded-circle"
-                        />
-                      </span>
-                      {% endfor %}
-                    </div>
-                  </div>
-                </div>
-                {% endfor %}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
       {% endif %}
     </div>
   </div>
+  {% endblock %}
 </div>
-{% endblock %}
