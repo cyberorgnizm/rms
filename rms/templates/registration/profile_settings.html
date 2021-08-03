@@ -1,14 +1,10 @@
 {% extends 'registration/base.html'%}
 {% load static %}
-{% block content %}
+{% block main %}
   <!-- page content -->
   <div>
-    <div class="header">
-    <!-- navbar -->
-    {% include 'pages/includes/navbar.html' %}
-    </div>
     <!-- Container fluid -->
-    <div class="container-fluid px-6 py-4">
+    <div class="container-fluid px-6 py-4 mt-10">
       <div class="row">
         <div class="col-lg-12 col-md-12 col-12">
           <!-- Page header -->
@@ -81,10 +77,27 @@
 
                   <!-- row -->
                   <div class="mb-3 row">
-                    <label for="email" class="col-sm-4 col-form-label
-                        form-label">Email</label>
+                    <div class="col-md-8 col-12 offset-md-4">
+                      <div class="text-center">
+                        <p><strong><u>Note:</u></strong> </p>
+                        <small>Your Email and Username can't be modified after registration. Please contact the admin if you need to make changes to these.</small>
+                      </div>
+                    </div>
+                    <label for="username" class="col-sm-4 col-form-label
+                    form-label">Username</small></label>
                     <div class="col-md-8 col-12">
-                      <input type="email" class="form-control" value="{{user.email}}" placeholder="Email" id="email" required>
+                        <fieldset disabled="disabled">
+                        <input type="text" class="form-control" value="{{user.username}}" placeholder="Username" id="username" required>
+                      </fieldset>
+                    </div>
+                  </div>
+                  <div class="mb-3 row">
+                    <label for="email" class="col-sm-4 col-form-label
+                    form-label">Email</small></label>
+                    <div class="col-md-8 col-12">
+                        <fieldset disabled="disabled">
+                        <input type="email" class="form-control" value="{{user.email}}" placeholder="Email" id="email" required>
+                      </fieldset>
                     </div>
                   </div>
                   <!-- row -->
