@@ -19,7 +19,7 @@ class PurchaseOrder(models.Model):
     order_id = models.UUIDField(unique=True)
     cafeteria = models.ForeignKey('restaurants.Cafeteria', on_delete=models.CASCADE)
     student = models.ForeignKey('accounts.Student', related_name="orders", on_delete=models.CASCADE)
-    approved_by_worker = models.ForeignKey('accounts.Worker', null=True, blank=True, related_name="orders", on_delete=models.CASCADE)
+    action_by = models.ForeignKey('accounts.Worker', null=True, blank=True, related_name="orders", on_delete=models.CASCADE)
     status = models.CharField(max_length=255, choices=ORDER_STATUS)
     is_paid = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
