@@ -165,10 +165,10 @@
                   {% if user.is_superuser or user.is_worker %}
                   <div class="col-12 mb-5">
                     <!-- text -->
-                    <h6 class="text-uppercase fs-5 ls-2">Position</h6>
+                    <h6 class="text-uppercase fs-5 ls-2">Role</h6>
                     <p class="mb-0">
                       {% if user.is_superuser %} Admin {% elif user.is_worker %}
-                      {{user.worker.woker_role}} {% endif %}
+                      {{user.worker.worker_role}} {% endif %}
                     </p>
                   </div>
                   {% endif %}
@@ -191,7 +191,7 @@
                   {% if user.student %}
                   <div class="col-12">
                     <h6 class="text-uppercase fs-5 ls-2">Address</h6>
-                    <p class="mb-0">{{user.student_address}}</p>
+                    <p class="mb-0">{{user.student.student_address}}</p>
                   </div>
                   {% endif %}
                 </div>
@@ -247,7 +247,7 @@
           {% if user.is_worker %}
           <div class="col-xl-6 col-lg-12 col-md-12 col-12 mb-6">
             <!-- card -->
-            <div class="card">
+            <div class="card h-100">
               <!-- card body -->
               <div class="card-body">
                 <!-- card title -->

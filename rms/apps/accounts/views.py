@@ -16,13 +16,13 @@ class RegistrationView(generic.FormView):
     @transaction.atomic
     def form_valid(self, form):
         response = super().form_valid(form)
-
         # Create user to be associated with student
         user = get_user_model().objects.create(
             username=form.cleaned_data["username"],
             first_name=form.cleaned_data["first_name"],
             last_name=form.cleaned_data["last_name"],
             email=form.cleaned_data["email"],
+            gender=form.cleaned_data["gender"],
             phone=form.cleaned_data["phone"],
             is_student=True
         )
@@ -32,7 +32,6 @@ class RegistrationView(generic.FormView):
         models.Student.objects.create(
             user=user,
             level=form.cleaned_data["level"],
-            gender=form.cleaned_data["gender"],
             matric=form.cleaned_data["matric"],
             admission_year=form.cleaned_data["admission_year"],
             student_address=form.cleaned_data["student_address"]
@@ -77,26 +76,86 @@ class ProfileView(LoginRequiredMixin, generic.DetailView):
         queryset = super().get_queryset()
         return queryset.filter(username=self.request.user.username)
 
-class EditProfileView(generic.TemplateView):
+class EditProfileView(LoginRequiredMixin, generic.TemplateView):
+    login_url = reverse_lazy('accounts:login')
+    redirect_field_name = 'redirect_to'
     template_name = "registration/profile_settings.html"
     model = get_user_model()
+
+    def get_user_data(self):
+        data = dict()
+        user = self.request.user
+        # TODO: this code is a mess
+        data["first_name"] = user.first_name
+        data["last_name"] = user.last_name
+        data["email"] = user.email
+        data["username"] = user.username
+        data["phone"] = user.phone
+        data["gender"] = user.gender
+        return data
 
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['worker'] = get_user_model().objects.all()
+        
+        data = self.get_user_data()
+
+        if self.request.user.is_student:
+            print(self.request.user.student.admission_year)
+            student = self.request.user.student
+            # TODO: so is this one
+            data["matric"] = student.matric
+            data["level"] = student.level
+            data["department"] = student.department
+            data["student_address"] = student.student_address
+            context["form"] = forms.StudentForm(data)
+        elif self.request.user.is_worker:
+            worker = self.request.user.worker
+            data["worker_role"] = worker.worker_role
+            context["form"] = forms.WorkerForm(data)
+        return context
 
 
     def post(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return HttpResponseForbidden()
+        user = get_user_model().objects.get(id=self.request.user.id)
+        if user.is_worker:
+            form = forms.WorkerForm(request.POST)
+            if form.is_valid():
+                # FIXME: I should probably do something about this
+                user.username=form.cleaned_data["username"]
+                user.first_name=form.cleaned_data["first_name"]
+                user.last_name=form.cleaned_data["last_name"]
+                user.email=form.cleaned_data["email"]
+                user.gender=form.cleaned_data["gender"]
+                user.phone=form.cleaned_data["phone"]
+                user.save()
+                user.worker.worker_role=form.cleaned_data["worker_role"]
+                user.worker.save()
+        elif user.is_student:
+            form = forms.StudentForm(request.POST)
+            if form.is_valid():
+                # FIXME: seriously...
+                user.username=form.cleaned_data["username"]
+                user.first_name=form.cleaned_data["first_name"]
+                user.last_name=form.cleaned_data["last_name"]
+                user.email=form.cleaned_data["email"]
+                user.gender=form.cleaned_data["gender"]
+                user.phone=form.cleaned_data["phone"]
+                user.save()
+                user.student.matric=form.cleaned_data["matric"]
+                user.student.level=form.cleaned_data["level"]
+                # user.student.department=form.cleaned_data["department"]
+                user.student.admission_year=form.cleaned_data["admission_year"]
+                user.student.student_address=form.cleaned_data["student_address"]
+                user.student.save()
         # check image upload
         upload = request.FILES.get('filepond', None)
         if upload:
-            user = get_user_model().objects.get(username=request.user.username)
+            user = get_user_model().objects.get(username=user.username)
             user.avatar = upload
             user.save()
-            return HttpResponse({"message": "success"})
+            return HttpResponseRedirect(reverse('accounts:setting', kwargs={'username': user.username}))
             
-        return HttpResponseRedirect(reverse('accounts:profile', kwargs={'username': self.request.user.username}))
+        return HttpResponseRedirect(reverse('accounts:profile', kwargs={'username': user.username}))
 

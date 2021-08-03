@@ -51,13 +51,13 @@ class UserForm(forms.Form):
             'class': 'form-control form-control-sm'
         }
     ))
-    password = forms.CharField(max_length=255, widget=forms.PasswordInput(
+    password = forms.CharField(max_length=255, required=False, widget=forms.PasswordInput(
         attrs={
             "placeholder": "**************",
             "class": "form-control form-control-sm"
         }
     ))
-    confirm_password = forms.CharField(max_length=255, widget=forms.PasswordInput(
+    confirm_password = forms.CharField(max_length=255, required=False, widget=forms.PasswordInput(
         attrs={
             "placeholder": "**************",
             "class": "form-control form-control-sm"
@@ -69,7 +69,7 @@ class UserForm(forms.Form):
     gender = forms.CharField(
         max_length=255,
         widget=forms.Select(
-            choices=models.Student.GENDER,
+            choices=models.User.GENDER,
             attrs={'class': 'form-select form-select-sm'}
         )
     )
@@ -120,6 +120,7 @@ class StudentForm(UserForm):
     )
 
     admission_year = forms.DateTimeField(
+        required=False,
         widget=forms.DateTimeInput(
             attrs={'class': 'form-control form-control-sm', "type": "date"}
         )
@@ -135,20 +136,23 @@ class StudentForm(UserForm):
 
 class WorkerForm(UserForm):
     field_order = [
+        'avatar',
         'username',
         'password',
         'confirm_password',
-        'photo',
         'first_name',
         'last_name',
         'email',
         'phone',
-        'role',
+        'gender',
+        'worker_role',
     ]
 
-    woker_role = forms.CharField(
+    worker_role = forms.CharField(
         max_length=255,
+        label="Cafeteria Role",
         widget=forms.Select(
-            choices=models.Worker.WORKER_ROLES
+            choices=models.Worker.WORKER_ROLES[1:],
+            attrs={'class': 'form-select form-select-sm'}
         )
     )

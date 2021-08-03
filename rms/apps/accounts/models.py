@@ -8,9 +8,14 @@ from django.conf import settings
 
 class User(AbstractUser):
     """Model for managing users registered on the platform"""
+    GENDER = (
+        ('M', 'Male'),
+        ('F', 'Female'),
+    )
 
     avatar = models.ImageField(upload_to="users", verbose_name="upload photo", null=True, blank=True)
     bio = models.TextField(verbose_name="About", blank=True, null=True)
+    gender = models.CharField(max_length=1, choices=GENDER, blank=True, null=True, verbose_name="gender")
     phone = PhoneNumberField(null=True, blank=True)
     is_student = models.BooleanField(default=False)
     is_worker = models.BooleanField(default=False)
@@ -44,15 +49,9 @@ class Student(models.Model):
         ('400', '400 Level'),
     )
 
-    GENDER = (
-        ('M', 'Male'),
-        ('F', 'Female'),
-    )
-
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     level = models.CharField(max_length=255, choices=COLLEGE_LEVELS, verbose_name="level")
-    gender = models.CharField(max_length=1, choices=GENDER, verbose_name="gender")
     matric = models.CharField(max_length=255, verbose_name="matriculation number")
     department = models.ForeignKey('Department', related_name="students", on_delete=models.SET_NULL, null=True)
     admission_year = models.DateField(null=True)
