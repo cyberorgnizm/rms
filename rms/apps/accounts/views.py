@@ -9,18 +9,35 @@ from . import forms, models
 
 
 class RegistrationView(generic.FormView):
-    form_class = forms.UserForm
+    form_class = forms.StudentForm
     success_url = reverse_lazy('login')
     template_name = "registration/signup.html"
     
     @transaction.atomic
     def form_valid(self, form):
         response = super().form_valid(form)
-        form.cleaned_data.pop('confirm_password')
-        form.cleaned_data.pop('gender')
-        user = get_user_model().objects.create(**form.cleaned_data)
+
+        # Create user to be associated with student
+        user = get_user_model().objects.create(
+            username=form.cleaned_data["username"],
+            first_name=form.cleaned_data["first_name"],
+            last_name=form.cleaned_data["last_name"],
+            email=form.cleaned_data["email"],
+            phone=form.cleaned_data["phone"],
+            is_student=True
+        )
         user.set_password(form.cleaned_data.get('password'))
         user.save()
+
+        models.Student.objects.create(
+            user=user,
+            level=form.cleaned_data["level"],
+            gender=form.cleaned_data["gender"],
+            matric=form.cleaned_data["matric"],
+            admission_year=form.cleaned_data["admission_year"],
+            student_address=form.cleaned_data["student_address"]
+        )
+
         return response
 
 
@@ -49,6 +66,10 @@ class ProfileView(LoginRequiredMixin, generic.DetailView):
         if self.request.user.is_student:
             user = self.model.objects.get(id=self.request.user.id)
             orders = PurchaseOrder.objects.filter(student=user.student)
+            context["orders"] = orders
+        elif self.request.user.is_worker:
+            user = self.model.objects.get(id=self.request.user.id)
+            orders = PurchaseOrder.objects.filter(cafeteria=user.worker.cafeteria)
             context["orders"] = orders
         return context
 

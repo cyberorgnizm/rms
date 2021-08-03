@@ -25,50 +25,52 @@ class LoginForm(AuthenticationForm):
 class UserForm(forms.Form):
     first_name = forms.CharField(max_length=255, widget=forms.TextInput(
         attrs={
-            'class': 'form-control'
+            'class': 'form-control form-control-sm'
         }
     ))
     last_name = forms.CharField(max_length=255, widget=forms.TextInput(
         attrs={
-            'class': 'form-control'
+            'class': 'form-control form-control-sm'
         }
     ))
-    avatar = forms.ImageField(label="Picture", required=False, widget=forms.FileInput(
+    avatar = forms.ImageField(label="", required=False, widget=forms.FileInput(
         attrs={
+            'type': 'file',
             'class': 'filepond',
+            'name': 'filepond',
             'accept': "image/png, image/jpeg, image/gif"
         }
     ))
     email = forms.EmailField(widget=forms.EmailInput(
         attrs={
-            'class': 'form-control'
+            'class': 'form-control form-control-sm'
         }
     ))
     username = forms.CharField(max_length=255,  widget=forms.TextInput(
         attrs={
-            'class': 'form-control'
+            'class': 'form-control form-control-sm'
         }
     ))
     password = forms.CharField(max_length=255, widget=forms.PasswordInput(
         attrs={
             "placeholder": "**************",
-            "class": "form-control"
+            "class": "form-control form-control-sm"
         }
     ))
     confirm_password = forms.CharField(max_length=255, widget=forms.PasswordInput(
         attrs={
             "placeholder": "**************",
-            "class": "form-control"
+            "class": "form-control form-control-sm"
         }
     ))
     phone = PhoneNumberField(required=False, widget=forms.TextInput(
-        attrs={'class': 'form-control'}
+        attrs={'class': 'form-control form-control-sm'}
     ))
     gender = forms.CharField(
         max_length=255,
         widget=forms.Select(
             choices=models.Student.GENDER,
-            attrs={'class': 'form-select'}
+            attrs={'class': 'form-select form-select-sm'}
         )
     )
 
@@ -78,6 +80,7 @@ class UserForm(forms.Form):
 
 class StudentForm(UserForm):
     field_order = [
+        'avatar',
         'username',
         'password',
         'confirm_password',
@@ -85,40 +88,47 @@ class StudentForm(UserForm):
         'first_name',
         'last_name',
         'email',
-        'matriculation_number',
+        'matric',
         'phone',
         'gender',
         'level',
         'department',
-        'admission_year'
+        'admission_year',
+        'student_address'
     ]
 
-    matriculation_number = forms.CharField()
+    matric = forms.CharField(
+        widget=forms.TextInput(
+            attrs={'class': 'form-control form-control-sm'}
+        )
+    )
 
     level = forms.CharField(
         max_length=255,
         widget=forms.Select(
             choices=models.Student.COLLEGE_LEVELS,
-            attrs={'class': 'form-select'}
+            attrs={'class': 'form-select form-select-sm'}
         )
     )
 
     department = forms.CharField(
         max_length=255,
+        required=False,
         widget=forms.Select(
-            attrs={'class': 'form-select'}
+            attrs={'class': 'form-select form-select-sm'}
         )
     )
 
     admission_year = forms.DateTimeField(
         widget=forms.DateTimeInput(
-            attrs={'class': 'form-control'}
+            attrs={'class': 'form-control form-control-sm', "type": "date"}
         )
     )
 
-    address = forms.CharField(
+    student_address = forms.CharField(
+        label="Address",
         widget=forms.Textarea(
-            attrs={'class': 'form-control'}
+            attrs={'class': 'form-control form-control-sm'}
         )
     )
 
@@ -136,7 +146,7 @@ class WorkerForm(UserForm):
         'role',
     ]
 
-    role = forms.CharField(
+    woker_role = forms.CharField(
         max_length=255,
         widget=forms.Select(
             choices=models.Worker.WORKER_ROLES
