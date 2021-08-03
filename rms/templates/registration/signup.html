@@ -11,7 +11,11 @@
           <!-- Form -->
           <form method="POST">
             {% csrf_token %}
-            {% include 'registration/includes/avatar_upload.html'%}
+            <div class="d-flex justify-content-center my-5">
+              <div class="avatar avatar-upload rounded-circle">
+                {{form.avatar}}
+              </div>
+            </div>            
             <!-- First and Last name -->
             <div class="row mb-3">
               <div class="col-12">{{form.non_field_errors}}</div>
@@ -30,54 +34,100 @@
                 {{form.last_name}}
               </div>
             </div>
-            <!-- Username -->
-            <div class="mb-3">
-              {{form.username.errors}}
-              <label for="{{form.username.id_for_label}}" class="form-label"
-                >User Name</label
-              >
-              {{form.username}}
-            </div>
-            <!-- Email -->
-            <div class="mb-3">
-              {{form.email.errors}}
-              <label for="{{form.email.id_for_label}}" class="form-label"
-                >Email</label
-              >
-              {{form.email}}
-            </div>
-            <!-- Password -->
-            <div class="mb-3">
-              {{form.password.errors}}
-              <label for="{{form.password.id_for_label}}" class="form-label"
-                >Password</label
-              >
-              {{form.password}}
+            <!-- Username and Email -->
+            <div class="row mb-3">
+              <div class="col-6">
+                {{form.username.errors}}
+                <label for="{{form.username.id_for_label}}" class="form-label"
+                  >User Name</label
+                >
+                {{form.username}}
+              </div>
+              <div class="col-6">
+                {{form.email.errors}}
+                <label for="{{form.email.id_for_label}}" class="form-label"
+                  >Email</label
+                >
+                {{form.email}}
+              </div>
             </div>
             <!-- Password -->
-            <div class="mb-3">
-              {{form.confirm_password.errors}}
-              <label
-                for="{{form.confirm_password.id_for_label}}"
-                class="form-label"
-                >Confirm Password</label
-              >
-              {{form.confirm_password}}
+            <div class="row mb-3">
+              <div class="col-6">
+                {{form.password.errors}}
+                <label for="{{form.password.id_for_label}}" class="form-label"
+                  >Password</label
+                >
+                {{form.password}}
+              </div>
+              <div class="col-6">
+                {{form.confirm_password.errors}}
+                <label
+                  for="{{form.confirm_password.id_for_label}}"
+                  class="form-label"
+                  >Confirm Password</label
+                >
+                {{form.confirm_password}}
+              </div>
             </div>
+            <!-- Phone and Gender -->
             <div class="row">
-              <div class="col-8 mb-3">
+              <div class="col-6 mb-3">
                 {{form.phone.errors}}
                 <label for="{{form.phone.id_for_label}}" class="form-label"
                   >Phone</label
                 >
                 {{form.phone}}
               </div>
-              <div class="col-4 mb-3">
+              <div class="col-6 mb-3">
                 {{form.gender.errors}}
                 <label for="{{form.gender.id_for_label}}" class="form-label"
                   >Gender</label
                 >
                 {{form.gender}}
+              </div>
+            </div>
+            <!-- Matric and Level -->
+            <div class="row">
+              <div class="col-6 mb-3">
+                {{form.matric.errors}}
+                <label for="{{form.matric.id_for_label}}" class="form-label"
+                  >Matriculation Number</label
+                >
+                {{form.matric}}
+              </div>
+              <div class="col-6 mb-3">
+                {{form.level.errors}}
+                <label for="{{form.level.id_for_label}}" class="form-label"
+                  >Level</label
+                >
+                {{form.level}}
+              </div>
+            </div>
+            <!-- Department and Admission Year -->
+            <div class="row">
+              <div class="col-6 mb-3">
+                {{form.department.errors}}
+                <label for="{{form.department.id_for_label}}" class="form-label"
+                  >Department</label
+                >
+                {{form.department}}
+              </div>
+              <div class="col-6 mb-3">
+                {{form.admission_year.errors}}
+                <label for="{{form.admission_year.id_for_label}}" class="form-label"
+                  >Admission Year</label
+                >
+                {{form.admission_year}}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12 mb-3">
+                {{form.student_address.errors}}
+                  <label for="{{form.student_address.id_for_label}}" class="form-label"
+                    >Address</label
+                  >
+                  {{form.student_address}}
               </div>
             </div>
             <!-- Checkbox -->
