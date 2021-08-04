@@ -18,17 +18,62 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarResponsive">
     <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
-      <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'about' %}">About</a>
+      </li>
       <li class="nav-item">
         <a class="nav-link" href="{% url 'restaurants:cafeterias' %}"
           >Cafeterias</a
         >
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'orders:purchases' %}"
-          >Orders</a
-        >
+        <a class="nav-link" href="{% url 'orders:purchases' %}">Orders</a>
       </li>
+      {% if user.is_worker and user.worker.worker_role == "manager" %}
+      <li class="nav-item dropdown">
+        <a
+          class="nav-link"
+          href="#"
+          role="button"
+          id="dropdownUser"
+          data-bs-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+          >Administration</a
+        >
+        <div
+          class="dropdown-menu dropdown-menu-end"
+          aria-labelledby="dropdownUser"
+        >
+          <ul class="list-unstyled">
+            <li>
+              <a
+                class="dropdown-item"
+                href="{% url 'restaurants:menu-admin' user.worker.cafeteria.slug %}"
+              >
+                <i
+                  class="me-2 icon-xxs dropdown-item-icon"
+                  data-feather="shopping-cart"
+                ></i
+                >Menu Administration
+              </a>
+            </li>
+            <li>
+              <a
+                class="dropdown-item"
+                href="{% url 'restaurants:staff-admin' user.worker.cafeteria.slug %}"
+              >
+                <i
+                  class="me-2 icon-xxs dropdown-item-icon"
+                  data-feather="user"
+                ></i
+                >Staff Administration
+              </a>
+            </li>
+          </ul>
+        </div>
+      </li>
+      {% endif %}
     </ul>
     <!--Navbar nav -->
     <ul class="navbar-nav navbar-right-wrap mx-5 d-flex nav-top-wrap">
@@ -82,7 +127,11 @@
                       <h6 class="mb-1">Price: {{value.price}}</h6>
                       <h6 class="mb-1">Quantity: {{value.quantity}}</h6>
                       <p class="mb-0">
-                        <strong><small>Total: {{ value.price|multiply:value.quantity}}</small></strong
+                        <strong
+                          ><small
+                            >Total: {{
+                            value.price|multiply:value.quantity}}</small
+                          ></strong
                         >
                       </p>
                     </div>
@@ -180,7 +229,10 @@
               </a>
             </li>
             <li>
-              <a class="dropdown-item" href="{% url 'accounts:setting' user.username %}">
+              <a
+                class="dropdown-item"
+                href="{% url 'accounts:setting' user.username %}"
+              >
                 <i
                   class="me-2 icon-xxs dropdown-item-icon"
                   data-feather="settings"
