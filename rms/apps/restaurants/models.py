@@ -1,14 +1,15 @@
 from django.db import models
 from django.utils.text import slugify
 from django.conf import settings
+from django.contrib.auth import get_user_model
 
 
 RATING_CHOICES = (
-    (1, 'terrible'),
-    (2, 'poor'),
-    (3, 'good'),
-    (4, 'very good'),
-    (5, 'excellent')
+    (1, 'Terrible'),
+    (2, 'Poor'),
+    (3, 'Good'),
+    (4, 'Very Good'),
+    (5, 'Excellent')
 )
 
 class Cafeteria(models.Model):
@@ -33,7 +34,7 @@ class CafeteriaReview(models.Model):
     """Model for managing reviews on cafeterias"""
 
     cafeteria = models.ForeignKey('Cafeteria', related_name="reviews", on_delete=models.CASCADE)
-    reviewer = models.OneToOneField('accounts.Student', on_delete=models.CASCADE)
+    reviewer = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
     rating = models.IntegerField(choices=RATING_CHOICES, null=True, blank=True)
     comment = models.TextField(blank=True, null=True)
 
@@ -74,7 +75,7 @@ class Menu(models.Model):
 class MenuReview(models.Model):
     """Model for managing reviews on cafeterias menus"""
 
-    reviewer = models.ForeignKey('accounts.Student', on_delete=models.CASCADE)
+    reviewer = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
     menu = models.ForeignKey('Menu', related_name="reviews", on_delete=models.CASCADE)
     rating = models.IntegerField(choices=RATING_CHOICES, null=True, blank=True)
     comment = models.TextField(blank=True, null=True)

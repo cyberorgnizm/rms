@@ -1,9 +1,10 @@
 from django.shortcuts import redirect
+from django.db.models import F
 from django.views import generic
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
-from rms.apps.accounts.models import Student, Worker
+from rms.apps.accounts.models import Lecturer, Student, Worker
 from .models import Cafeteria, CafeteriaReview, Menu, MenuReview
 from .forms import ReviewForm, MenuForm
 
@@ -21,31 +22,41 @@ class CafeteriaDetail(generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         cafeteria = self.get_object()
-        context["reviews"] = cafeteria.reviews.all()
-        context["manager"] = cafeteria.workers.get(worker_role='manager')
+        reviews = cafeteria.reviews.all()
+        _include_form = True
         try:
-            review = cafeteria.reviews.get(reviewer__user=self.request.user)
-            context["review"] = review
+            context["reviews"] = reviews[:3]
+            # include form only for new users who haven't submitted review
+            for review in reviews:
+                if review.reviewer.username == self.request.user.username:
+                    _include_form = False
+            if _include_form:
+                context["form"] = ReviewForm(self.request.POST)
+            context["manager"] = cafeteria.workers.get(worker_role='manager')
         except:
-            context["form"] = ReviewForm(self.request.POST)
+            messages.warning(self.request, message="This cafeteria doesn't have a manager registered with, please contact the admin for that.")
         return context
 
     
     def post(self, request, *args, **kwargs):
-        if request.user.is_student:
-            student = Student.objects.get(user=request.user)
-            form = ReviewForm(request.POST)
-            if form.is_valid():
+        # submit review for cafeteria
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            if request.user.is_student or request.user.is_lecturer:
                 CafeteriaReview.objects.create(
                     cafeteria=self.get_object(),
-                    reviewer=student,
+                    reviewer=request.user,
                     rating=form.cleaned_data["rating"],
                     comment=form.cleaned_data["comment"]
                 )
-                return redirect("restaurants:cafeterias")
-            else:
+                messages.success(request, message="Review successfully submitted")
                 return redirect("restaurants:cafeteria-detail", cafeteria_slug=kwargs["cafeteria_slug"])
-
+            else:
+                messages.error(request, "Only students and lecturers are allowed to submit reviews")
+                return redirect("restaurants:cafeteria-detail", cafeteria_slug=kwargs["cafeteria_slug"])
+        else:
+            messages.error(request, "Failed to submit review for cafeteria")
+            return redirect("restaurants:cafeteria-detail", cafeteria_slug=kwargs["cafeteria_slug"])
 
 
 class CafeteriaMenuList(generic.ListView):
@@ -116,21 +127,22 @@ class CafeteriaMenuDetail(generic.DetailView):
 
     
     def post(self, request, *args, **kwargs):
-        if request.user.is_student:
-            student = Student.objects.get(user=request.user)
+        # submit review for menu
+        if request.user.is_student or request.user.is_lecturer:
             form = ReviewForm(request.POST)
             if form.is_valid():
                 MenuReview.objects.create(
                     menu=self.get_object(),
-                    reviewer=student,
+                    reviewer=request.user,
                     rating=form.cleaned_data["rating"],
                     comment=form.cleaned_data["comment"]
                 )
-                messages.success(request, "Review successfully submitted")
+                messages.success(request, message="Review successfully submitted")
                 return redirect("restaurants:menu-list", cafeteria_slug=kwargs["cafeteria_slug"])
             else:
-                messages.error(request, "Failed to submit review")
+                messages.error(request, message="Failed to submit review")
                 return redirect("restaurants:menu-detail", cafeteria_slug=kwargs["cafeteria_slug"], menu_slug=kwargs["menu_slug"])
+        # create new menu item as manager
         elif request.user.is_worker and request.user.worker.worker_role == "manager":
             worker = Worker.objects.get(user=request.user)
             form = MenuForm(request.POST)
@@ -145,7 +157,9 @@ class CafeteriaMenuDetail(generic.DetailView):
                 return redirect("restaurants:menu-list", cafeteria_slug=kwargs["cafeteria_slug"])
             else:
                 return redirect("restaurants:menu-detail", cafeteria_slug=kwargs["cafeteria_slug"], menu_slug=kwargs["menu_slug"])
-
+        else:
+            messages.error(request, "You are not authorized to make request")
+            return redirect("restaurants:menu-list", cafeteria_slug=kwargs["cafeteria_slug"])
 
 @login_required(login_url="/accounts/login")
 def delete_menu(request, menu_slug, **kwargs):

@@ -9,6 +9,7 @@ class CafeteriaReviewTabularAdmin(admin.TabularInline):
 @admin.register(models.Cafeteria)
 class CafeteriaAdmin(admin.ModelAdmin):
     readonly_fields = ('image_tag',)
+    list_display = ('name', 'email', 'opening_hour', 'closing_hour')
 
     inlines = [
         CafeteriaReviewTabularAdmin

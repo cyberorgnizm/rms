@@ -14,7 +14,8 @@ class ReviewForm(forms.Form):
     comment = forms.CharField(
         widget=forms.Textarea(
             attrs={
-                "class": "form-control mb-3"
+                "class": "form-control mb-3",
+                "rows": 3
             }
         )
     )
