@@ -1,5 +1,4 @@
-{% extends 'pages/base.html'%} 
-{% block main %}
+{% extends 'pages/base.html'%} {% block main %}
 <div>
   <div class="container">
     <div class="row mt-12">
@@ -25,6 +24,7 @@
           "
         >
           <h4 class="display-5 text-white mb-2">Welcome to {{object.name}}</h4>
+          {% if manager %}
           <img
             src="{{manager.user.avatar.url}}"
             class="
@@ -35,6 +35,7 @@
             alt="{{object.manager}}"
           />
           <p class="text-white mb-2">{{manager}}</p>
+          {% endif %}
           <div class="text-justify-left">
             <p class="text-white mb-2">
               <i class="me-2 icon-xs" data-feather="mail"></i> {{object.email}}
@@ -69,33 +70,38 @@
               text-decoration-color: blueviolet;
             "
           >
-            cafeteria menu
+            Available Menu
           </p>
         </div>
+        {% if object.menus %}
         <div class="col-12 d-flex justify-content-end">
           <a href="{% url 'restaurants:menu-list' object.slug %}">View all</a>
         </div>
+        {% endif %}
       </div>
     </section>
-    <section class="page-section my-7">
+    <section class="page-section my-5">
       <div class="row">
-        {% for menu in object.menus.all %}
+        {% if object.menus %} {% for menu in object.menus.all %}
         <div class="col-md-3 col-xs-8 mb-5">
-          <div class="card h-100 rounded-3" style="width: 15rem; margin: auto;">
+          <div class="card h-100 rounded-3" style="width: 15rem; margin: auto">
             <img
               class="card-img-top"
               src="{{menu.image.url}}"
               alt="{{menu.menu_name}}"
             />
             <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <h5 class="card-title">
-                      <a href="{% url 'restaurants:menu-detail' object.slug menu.slug %}">{{menu.name}}</a>
-                    </h5>
-                </div>
-                <h5 class="card-title text-muted">{{menu.menu_type|title}}</h5>
-                <h6 class="card-subtitle mb-2 text-muted">
-                  <span
+              <div class="d-flex justify-content-between">
+                <h5 class="card-title">
+                  <a
+                    href="{% url 'restaurants:menu-detail' object.slug menu.slug %}"
+                    >{{menu.name}}</a
+                  >
+                </h5>
+              </div>
+              <h5 class="card-title text-muted">{{menu.menu_type|title}}</h5>
+              <h6 class="card-subtitle mb-2 text-muted">
+                <span
                   class="
                     icon-shape icon-sm
                     bg-light-primary
@@ -106,25 +112,33 @@
                   <i class="bi bi-cash-coin"></i>
                 </span>
                 &#8358;{{menu.price}}
-                </h6>
-                <p class="card-text text-truncate">
-                    <small>{{menu.description}}</small>
-                </p>
+              </h6>
+              <p class="card-text text-truncate">
+                <small>{{menu.description}}</small>
+              </p>
+              {% if user.is_student or user.is_lecturer %}
                 <a
-              href="{% url 'orders:cart_add' menu.id %}"
-              class="btn btn-sm btn-outline-secondary w-100"
-              >Add</a
-            >
+                href="{% url 'orders:cart_add' menu.id %}"
+                class="btn btn-sm btn-outline-secondary w-100"
+                >Add</a
+              >
+              {% endif %}
             </div>
           </div>
         </div>
-        {% endfor %}
+        {% endfor %} {% else %}
+        <div class="col-md-12 text-center mb-5">
+          <h3>0 items available</h3>
+          <p>There are no menu available in this cafeteria</p>
+        </div>
+        {% endif %}
       </div>
     </section>
     <!-- cafeteria review -->
-    <section class="page-section my-7">
+    {% if user.is_student or user.is_lecturer %}
+    <section class="page-section my-10">
       <div class="row">
-        <div class="col-12 d-flex justify-content-center my-10">
+        <div class="col-12 d-flex justify-content-center my-2">
           <p
             class="h1 section-heading text-uppercase text-center mt-8"
             style="
@@ -132,33 +146,48 @@
               text-decoration-color: blueviolet;
             "
           >
-            Cafeteria Review
+            Reviews
           </p>
         </div>
         <div class="col-5 mx-auto">
           {% if form %}
-          <form  method="post">
-            {% csrf_token %}
-            {% for field in form %}
+          <form method="post">
+            <fieldset>
+              {% csrf_token %} {% for field in form %}
               <label for="{{field.label_id}}">{{field.label}}</label>
-              {{field}}
-            {% endfor %}
+              {{field}} {% endfor %}
+            </fieldset>
             <button type="submit" class="btn btn-md btn-primary">Submit</button>
           </form>
-          {% else %}
-            <div class="text-center">
-              <p class="text-uppercase">Your Review</p>
-              <img class="avatar avatar-md rounded-circle" src="{{review.reviewer.user.avatar.url }}" alt="{{review.reviewer}}">
-              <blockquote class="my-2">
-                <q>{{review.comment}}</q>
-              </blockquote>
-              <small class="d-block">Rating: {{review.rating}}</small>
-              <span>{{review.reviewer}}</span>
+          {% endif %}
+          <!-- Reviews by customer -->
+          {% if reviews %}
+          <div class="text-center mt-8">
+            <p class="h5 text-uppercase my-5">Other Customer Reviews</p>
+            <div class="row">
+              {% for review in reviews %}
+              <div class="col-4 mx-auto p-4 rounded {% if review.reviewer == request.user %} bg-primary text-white {% endif %}">
+                <img
+                  class="avatar avatar-md rounded-circle"
+                  src="{{review.reviewer.avatar.url }}"
+                  alt="{{review.reviewer}}"
+                />
+                <blockquote class="my-2">
+                  <q><small>{{review.comment}}</small></q>
+                </blockquote>
+                <strong>
+                  <small class="d-block">Ratings: {{review.rating}}</small>
+                </strong>
+                <span>{{review.reviewer}}</span>
+              </div>
+              {% endfor %}
             </div>
+          </div>
           {% endif %}
         </div>
       </div>
     </section>
+    {% endif %}
   </div>
 </div>
 {% endblock %}

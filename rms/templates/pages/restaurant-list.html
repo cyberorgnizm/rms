@@ -1,58 +1,93 @@
-{% extends 'pages/base.html'%}
-
-{% block main %}
+{% extends 'pages/base.html'%} {% block main %}
 <div class="mb-20">
-    <!-- Page content -->
-    <div>
-        <div class="text-center mt-15 mb-10">
-            <h3 class="display-6" style="text-decoration: underline; text-decoration-color: blueviolet;">Our Cafeterias
-            </h3>
-        </div>
-        <div class="container">
-            <div class="row">
-                {% for cafeteria in object_list %}
-                <div class="col-md-3 mb-3">
-                    <div class="card rounded-3 h-100" style="width: 15rem;">
-                        <img src="{{cafeteria.image.url}}" alt="{{cafeteria}}"
-                        class="card-img-top"/>
-                        <!-- card body -->
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                <span class="icon-shape icon-sm bg-light-primary text-primary rounded-1">
-                                    <i class="bi bi-shop"></i>
-                                </span>
-                                <a href="{% url 'restaurants:cafeteria-detail' cafeteria.slug %}">
-                                    <span class="fw-bold">{{cafeteria.name}}</span>
-                                </a>
-                                </h5>
-                                <h5 class="card-subtitle">
-                                    <span class="icon-shape icon-sm bg-light-primary text-primary rounded-1">
-                                        <i class="bi bi-mailbox"></i>
-                                    </span>
-                                    <span>{{cafeteria.email}}</span>
-                                </h5>
-                                <div class="card-text mt-3">
-                                    <u class="text-center text-dark d-block">Working Hours</u>
-                                    <div>
-                                        <span class="icon-shape icon-sm bg-light-primary text-primary rounded-1">
-                                            <i class="bi bi-hourglass-top"></i>
-                                        </span>
-                                        <span class="text-dark">open: {{cafeteria.opening_hour}}</span>
-
-                                    </div>
-                                    <div>
-                                        <span class="icon-shape icon-sm bg-light-primary text-primary rounded-1">
-                                            <i class="bi bi-hourglass-bottom"></i>
-                                        </span>
-                                        <span class="text-dark">close: {{cafeteria.closing_hour}}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
+  <!-- Page content -->
+  <div>
+    <div class="text-center mt-15 mb-10">
+      <h3
+        class="display-6"
+        style="text-decoration: underline; text-decoration-color: blueviolet"
+      >
+        Our Cafeterias
+      </h3>
     </div>
-</div> 
+    <div class="container">
+      <div class="row">
+        {% for cafeteria in object_list %}
+        <div class="col-md-3 mb-3">
+          <div class="card rounded-3 h-100" style="width: 15rem">
+            <img
+              src="{{cafeteria.image.url}}"
+              alt="{{cafeteria}}"
+              class="card-img-top"
+            />
+            <!-- card body -->
+            <div class="card-body">
+              <h5 class="card-title">
+                <span
+                  class="
+                    icon-shape icon-sm
+                    bg-light-primary
+                    text-primary
+                    rounded-1
+                  "
+                >
+                  <i class="bi bi-shop"></i>
+                </span>
+                <a
+                  href="{% url 'restaurants:cafeteria-detail' cafeteria.slug %}"
+                >
+                  <span class="fw-bold">{{cafeteria.name}}</span>
+                </a>
+              </h5>
+              <h5 class="card-subtitle">
+                <span
+                  class="
+                    icon-shape icon-sm
+                    bg-light-primary
+                    text-primary
+                    rounded-1
+                  "
+                >
+                  <i class="bi bi-mailbox"></i>
+                </span>
+                <span>{{cafeteria.email}}</span>
+              </h5>
+              <div class="card-text mt-3"></div>
+            </div>
+            <div class="card-footer">
+              <u class="card-title text-center text-dark d-block">Working Hours</u>
+              <div>
+                <span
+                  class="
+                    icon-shape icon-sm
+                    bg-light-primary
+                    text-primary
+                    rounded-1
+                  "
+                >
+                  <i class="bi bi-hourglass-top"></i>
+                </span>
+                <span class="text-dark">open: {{cafeteria.opening_hour}}</span>
+              </div>
+              <div>
+                <span
+                  class="
+                    icon-shape icon-sm
+                    bg-light-primary
+                    text-primary
+                    rounded-1
+                  "
+                >
+                  <i class="bi bi-hourglass-bottom"></i>
+                </span>
+                <span class="text-dark">close: {{cafeteria.closing_hour}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

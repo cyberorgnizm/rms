@@ -69,7 +69,7 @@
         {% endif %}
       </div>
     </section>
-    {% if user.is_student %}
+    {% if user.is_student or user.is_lecturer %}
     <section class="page-section">
       <div class="row">
         <div class="col-12 d-flex justify-content-center">

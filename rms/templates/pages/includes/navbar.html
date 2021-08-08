@@ -79,8 +79,8 @@
     <ul class="navbar-nav navbar-right-wrap mx-5 d-flex nav-top-wrap">
       {% if user.is_authenticated %}
       <!-- shopping cart -->
-      {% if user.is_student %}
-      <li class="dropdown stopevent me-2">
+      {% if user.is_student or user.is_lecturer %}
+      <li class="dropdown stopevent me-3">
         <a
           class="
             btn btn-light btn-icon
@@ -124,13 +124,12 @@
                   <div class="row align-items-center">
                     <div class="col-6">
                       <h5 class="fw-bold mb-1">{{value.name}}</h5>
-                      <h6 class="mb-1">Price: {{value.price}}</h6>
+                      <h6 class="mb-1">Price: &#8358;{{value.price}}</h6>
                       <h6 class="mb-1">Quantity: {{value.quantity}}</h6>
                       <p class="mb-0">
                         <strong
                           ><small
-                            >Total: {{
-                            value.price|multiply:value.quantity}}</small
+                            >Total: &#8358;{{value.price|multiply:value.quantity}}</small
                           ></strong
                         >
                       </p>
