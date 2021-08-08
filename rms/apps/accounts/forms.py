@@ -111,9 +111,8 @@ class StudentForm(UserForm):
         )
     )
 
-    department = forms.CharField(
-        max_length=255,
-        required=False,
+    department = forms.ModelChoiceField(
+        queryset=models.Department.objects.all(),
         widget=forms.Select(
             attrs={'class': 'form-select form-select-sm'}
         )
