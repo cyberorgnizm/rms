@@ -11,7 +11,7 @@ class UserAdmin(AbstractUserAdmin):
         (None, {'fields': ('username', 'password')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name', 'email', 'avatar', 'gender', 'bio',)}),
         (_('Permissions'), {
-            'fields': ('is_active', 'is_staff', 'is_superuser', 'is_worker', 'is_student', 'groups', 'user_permissions'),
+            'fields': ('is_active', 'is_staff', 'is_superuser', 'is_worker', 'is_student', 'is_lecturer', 'groups', 'user_permissions'),
         }),
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
     )
@@ -31,6 +31,11 @@ class DepartmentAdmin(admin.ModelAdmin):
 @admin.register(models.Student)
 class StudentAdmin(admin.ModelAdmin):
     list_display = ('user', 'matric', 'level')
+
+
+@admin.register(models.Lecturer)
+class LecturerAdmin(admin.ModelAdmin):
+    list_display = ('user', 'staff_id', 'department')
 
 
 @admin.register(models.Worker)

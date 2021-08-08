@@ -17,8 +17,9 @@ class User(AbstractUser):
     bio = models.TextField(verbose_name="About", blank=True, null=True)
     gender = models.CharField(max_length=1, choices=GENDER, blank=True, null=True, verbose_name="gender")
     phone = PhoneNumberField(null=True, blank=True)
-    is_student = models.BooleanField(default=False)
-    is_worker = models.BooleanField(default=False)
+    is_student = models.BooleanField(default=False, help_text="Designates whether the user is a student")
+    is_lecturer = models.BooleanField(default=False, help_text="Designates whether the user is alecturer")
+    is_worker = models.BooleanField(default=False, help_text="Designates whether the user is a worker in any of the college cafeteria")
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
@@ -28,9 +29,16 @@ class Department(models.Model):
     """Model for managing college departments"""
 
     FACULTIES = (
+        ('Administration', 'administation'),
         ('Science & Technology', 'science & technology'),
-        ('Humanities', 'humanities'),
-        ('Medical Sciences', 'medical sciences')
+        ('Basic Medical Sciences', 'basic medical sciences'),
+        ('Basic Clinical Sciences', 'basic clinical sciences'),
+        ('Health Sciences', 'health sciences'),
+        ('Environmental Sciences', 'environmental sciences'),
+        ('Social Sciences', 'social sciences'),
+        ('Law', 'law'),
+        ('Education', 'education'),
+        ('Arts', 'arts')
     )
     name = models.CharField(max_length=255)
     faculty = models.CharField(max_length=255, choices=FACULTIES)
@@ -60,6 +68,21 @@ class Student(models.Model):
     def __str__(self):
         return f"{self.user}"
 
+    class Meta:
+        unique_together = ('user', 'matric')
+
+
+class Lecturer(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    department = models.ForeignKey('Department', related_name="lecturers", on_delete=models.SET_NULL, null=True)
+    staff_id = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f"{self.user}"
+
+    class Meta:
+        unique_together = ('user', 'staff_id', 'department')
+
 class Worker(models.Model):
     """Model for managing college cafeterias worker records"""
 
@@ -77,6 +100,9 @@ class Worker(models.Model):
 
     def __str__(self):
         return f"{self.user} ({self.worker_role})"
+
+    class Meta:
+        unique_together = ('user', 'worker_id', 'cafeteria')
 
     def save(self, *args, **kwargs):
         if not self.worker_id:
