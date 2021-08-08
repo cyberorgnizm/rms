@@ -12,20 +12,72 @@
     </div>
     <div class="container">
       <div class="row">
+        {% if user.is_worker and user.worker.worker_role == "manager" %}
+        <div class="col-md-12 mb-3 d-flex justify-content-end">
+          <a href="#" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addMenuModal">Add Menu</a>
+        </div>
+
+        <!-- Add Menu Modal -->
+        <div
+          class="modal fade"
+          id="addMenuModal"
+          tabindex="-1"
+          role="dialog"
+          aria-labelledby="addMenuModalTitle"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="addMenuModalTitle">
+                  Add New Menu
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <form id="paymentForm" method="POST" enctype="multipart/form-data">
+                  <fieldset>
+                    {% csrf_token %}
+                    <div class="form-group">
+                      <label for="image">Menu Image</label>
+                      <input id="image" type="file" name="image" class="form-control form-control-sm mb-3"  required/>
+                    </div>
+                    <!--  -->
+                    {{form.as_p}}
+                  </fieldset>
+                  <div class="form-submit d-flex mt-3 justify-content-end">
+                    <button
+                      type="submit"
+                      class="btn btn-sm btn-outline-primary"
+                    >
+                      Submit
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %} 
+        
         {% for menu in object_list %}
         <div class="col-md-3">
           <div class="card rounded-3 h-100" style="width: 15rem; margin: auto">
             <img src="{{menu.image.url}}" alt="{{menu}}" class="card-img-top" />
             <!-- card body -->
             <div class="card-body">
-              
-                <h5 class="card-title fw-bold">
-                    <a
-                href="{% url 'restaurants:menu-detail' menu.cafeteria.slug menu.slug %}"
-              >
-              {{menu.name}}
-            </a>
-            </h5>
+              <h5 class="card-title fw-bold">
+                <a
+                  href="{% url 'restaurants:menu-detail' menu.cafeteria.slug menu.slug %}"
+                >
+                  {{menu.name}}
+                </a>
+              </h5>
               <div class="card-subtitle">
                 <span
                   class="
@@ -41,6 +93,14 @@
               </div>
               <div class="card-text">{{menu.description}}</div>
             </div>
+            {% if user.is_worker and user.worker.worker_role == "manager" %}
+            <div class="card-footer">
+              <div class="d-flex justify-content-between">
+                <a href="{% url 'restaurants:menu-detail' menu.cafeteria.slug menu.slug %}" class="btn btn-sm btn-outline-primary">Edit <i class="icon-xs" data-feather="edit"></i></a>
+                <a href="{% url 'restaurants:delete-menu' menu.cafeteria.slug menu.slug %}" class="btn btn-sm btn-outline-danger">Delete <i class="icon-xs" data-feather="trash"></i></a>
+              </div>
+            </div>
+            {% endif %}
           </div>
         </div>
         {% endfor %}
