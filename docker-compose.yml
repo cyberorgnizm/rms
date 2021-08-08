@@ -1,0 +1,23 @@
+version: '3.8'
+services: 
+    rms:
+      depends_on:
+        - database
+      build:
+          context: .
+          dockerfile: Dockerfile
+      container_name: restaurant
+      ports:
+        - 8000:8000
+      volumes:
+      - .:/rms
+  
+    database:
+      image: postgres
+      container_name: database
+      restart: always
+      ports: 
+        - 5432:5432
+      environment:
+        POSTGRES_DB: rms
+        POSTGRES_PASSWORD: postgres
