@@ -34,7 +34,7 @@ class CafeteriaReview(models.Model):
     """Model for managing reviews on cafeterias"""
 
     cafeteria = models.ForeignKey('Cafeteria', related_name="reviews", on_delete=models.CASCADE)
-    reviewer = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
+    reviewer = models.ForeignKey(get_user_model(), related_name="cafeteria_reviewer", on_delete=models.CASCADE)
     rating = models.IntegerField(choices=RATING_CHOICES, null=True, blank=True)
     comment = models.TextField(blank=True, null=True)
 
@@ -75,8 +75,8 @@ class Menu(models.Model):
 class MenuReview(models.Model):
     """Model for managing reviews on cafeterias menus"""
 
-    reviewer = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
     menu = models.ForeignKey('Menu', related_name="reviews", on_delete=models.CASCADE)
+    reviewer = models.ForeignKey(get_user_model(), related_name="menu_reviewer", on_delete=models.CASCADE)
     rating = models.IntegerField(choices=RATING_CHOICES, null=True, blank=True)
     comment = models.TextField(blank=True, null=True)
 

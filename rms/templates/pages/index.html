@@ -100,31 +100,78 @@
       </div>
     </section>
     <!-- cafeteria section -->
+    {% if top_cafeterias %}
     <section class="page-section mt-10 mb-10" id="cafeteria">
       <div class="text-center">
         <h3 class="section-heading text-uppercase mt-5">Top Cafeterias</h3>
       </div>
       <div class="container mt-10">
-        <div class="row text-center">
+        <div class="row">
+          {% for cafeteria in top_cafeterias %}
           <div class="col-md-4">
-            <i class="me-2 icon-xxl" data-feather="smile"></i>
-            <h4 class="my-3 text-uppercase">Shop with Confidence</h4>
-            <p class="text-muted">Our Buyer Protection covers your purchase from click to delivery.</p>
+            <div class="card rounded-3 h-100" style="width: 18rem">
+              <img
+                src="{{cafeteria.image.url}}"
+                alt="{{cafeteria}}"
+                class="card-img-top"
+              />
+              <!-- card body -->
+              <div class="card-body">
+                <h5 class="card-title">
+                  <span
+                    class="
+                      icon-shape icon-sm
+                      bg-light-primary
+                      text-primary
+                      rounded-1
+                    "
+                  >
+                    <i class="bi bi-shop"></i>
+                  </span>
+                  <a
+                    href="{% url 'restaurants:cafeteria-detail' cafeteria.slug %}"
+                  >
+                    <span class="fw-bold">{{cafeteria.name}}</span>
+                  </a>
+                </h5>
+                <h5 class="card-subtitle">
+                  <span
+                    class="
+                      icon-shape icon-sm
+                      bg-light-primary
+                      text-primary
+                      rounded-1
+                    "
+                  >
+                    <i class="bi bi-mailbox"></i>
+                  </span>
+                  <span>{{cafeteria.email}}</span>
+                </h5>
+                <div class="card-text mt-3"></div>
+              </div>
+              <div class="card-footer">
+                <u class="card-title text-center text-dark d-block">Reviews (Avg)</u>
+                <div class="text-center">
+                  <span
+                    class="
+                      icon-shape icon-sm
+                      bg-light-primary
+                      text-primary
+                      rounded-1
+                    "
+                  >
+                    <i class="bi bi-star-fill text-warning"></i>
+                  </span>
+                  <span class="text-dark">{{cafeteria.avg_reviews}} stars</span>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="col-md-4">
-            <i class="me-2 icon-xxl" data-feather="shield"></i>
-            <h4 class="my-3 text-uppercase">Safe payment</h4>
-            <p class="text-muted">Pay with the world most popular and secure payment method.</p>
-          </div>
-          <div class="col-md-4">
-            <i class="me-2 icon-xxl" data-feather="refresh-cw"></i>
-            <h4 class="my-3 text-uppercase">Refund policy</h4>
-            <p class="text-muted">If your orders haven't been processed and despite your payment, you will get a full
-              refund within 3 days.</p>
-          </div>
+          {% endfor %}
         </div>
       </div>
     </section>
+    {% endif %}
   </div>
   {% include 'pages/includes/footer.html' %}
 </div {% endblock %}>
