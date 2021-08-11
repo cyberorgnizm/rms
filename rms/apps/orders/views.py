@@ -52,7 +52,7 @@ class CheckoutPurchasesView(LoginRequiredMixin, generic.TemplateView):
                             order.delivery_address = request.user.student.student_address
                             order.save()
                         else:
-                            order.delivery_address = request.user.lecturer.lecturer_address
+                            order.delivery_address = request.user.lecturer.lecturer_address or str()
                         # verify transaction
                         if request.is_ajax():
                             body = json.loads(request.body)
@@ -92,6 +92,8 @@ class CheckoutPurchasesView(LoginRequiredMixin, generic.TemplateView):
                 messages.error(request, message="Only lecturers and/or students are allowed to place order.")
                 return redirect(request.get_raw_uri())
         except Exception as exp:
+            import pdb
+            pdb.set_trace()
             messages.error(request, message=str(exp))
             # TODO: handle exception when performing above computations
             return redirect(request.get_raw_uri())

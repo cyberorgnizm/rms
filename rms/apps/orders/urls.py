@@ -19,7 +19,7 @@ urlpatterns = [
     path('orders/<uuid:id>/update', PurchaseOrderUpdateView.as_view(), name="purchase_update"),
     path('orders/<uuid:id>/process-line/<int:line_id>', process_order_line, name="process_line"),
     # cart url configs     
-    path('cart/add/<int:id>/', cart_add, name='cart_add'),
+    path('cart/<slug:cafeteria_slug>/add/<int:id>/', cart_add, name='cart_add'),
     path('cart/clear/<int:id>/', item_clear, name='item_clear'),
     path('cart/increment/<int:id>/', item_increment, name='item_increment'),
     path('cart/decrement/<int:id>/', item_decrement, name='item_decrement'),
