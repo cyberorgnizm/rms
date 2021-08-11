@@ -25,11 +25,17 @@ class CafeteriaDetail(generic.DetailView):
         reviews = cafeteria.reviews.all()
         _include_form = True
         try:
+            context["card_items_id"] = [int(key) for key in self.request.session.get('cart')]
             context["reviews"] = reviews[:3]
             # include form only for new users who haven't submitted review
             for review in reviews:
                 if review.reviewer.username == self.request.user.username:
                     _include_form = False
+                    context["editform"] = ReviewForm(data={
+                        "rating": review.rating,
+                        "comment": review.comment,
+                    })
+                    break
             if _include_form:
                 context["form"] = ReviewForm(self.request.POST)
             context["manager"] = cafeteria.workers.get(worker_role='manager')
@@ -43,13 +49,20 @@ class CafeteriaDetail(generic.DetailView):
         form = ReviewForm(request.POST)
         if form.is_valid():
             if request.user.is_student or request.user.is_lecturer:
-                CafeteriaReview.objects.create(
-                    cafeteria=self.get_object(),
-                    reviewer=request.user,
-                    rating=form.cleaned_data["rating"],
-                    comment=form.cleaned_data["comment"]
-                )
-                messages.success(request, message="Review successfully submitted")
+                review = CafeteriaReview.objects.filter(reviewer=request.user).first()
+                if review:
+                    review.rating=form.cleaned_data["rating"]
+                    review.comment=form.cleaned_data["comment"]
+                    review.save()
+                    messages.success(request, message="Review successfully updated")
+                else:
+                    CafeteriaReview.objects.create(
+                        cafeteria=self.get_object(),
+                        reviewer=request.user,
+                        rating=form.cleaned_data["rating"],
+                        comment=form.cleaned_data["comment"]
+                    )
+                    messages.success(request, message="Review successfully submitted")
                 return redirect("restaurants:cafeteria-detail", cafeteria_slug=kwargs["cafeteria_slug"])
             else:
                 messages.error(request, "Only students and lecturers are allowed to submit reviews")
@@ -108,22 +121,27 @@ class CafeteriaMenuDetail(generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         menu = self.get_object()
-        context["all_reviews"] = menu.reviews.all()
+        reviews = menu.reviews.all()
+        _include_form = True
         if self.request.user.is_worker and self.request.user.worker.worker_role == "manager":
-            menu = self.get_object()
-            context["menu_form"] = MenuForm(data={
-                "name": menu.name,
-                "price":menu.price,
-                "description": menu.description,
-                "menu_type": menu.menu_type,
-            })
-        try:
-            review = menu.reviews.get(reviewer__user=self.request.user)
-            context["review"] = review
-        except:
+                context["menu_form"] = MenuForm(data={
+                    "name": menu.name,
+                    "price":menu.price,
+                    "description": menu.description,
+                    "menu_type": menu.menu_type,
+                })
+        context["reviews"] = reviews
+        for review in reviews:
+            if review.reviewer.username == self.request.user.username:
+                _include_form = False
+                context["editform"] = ReviewForm(data={
+                    "rating": review.rating,
+                    "comment": review.comment,
+                })
+                break
+        if _include_form:
             context["form"] = ReviewForm(self.request.POST)
-        finally:
-            return context
+        return context
 
     
     def post(self, request, *args, **kwargs):
@@ -131,13 +149,20 @@ class CafeteriaMenuDetail(generic.DetailView):
         if request.user.is_student or request.user.is_lecturer:
             form = ReviewForm(request.POST)
             if form.is_valid():
-                MenuReview.objects.create(
-                    menu=self.get_object(),
-                    reviewer=request.user,
-                    rating=form.cleaned_data["rating"],
-                    comment=form.cleaned_data["comment"]
-                )
-                messages.success(request, message="Review successfully submitted")
+                review = MenuReview.objects.filter(reviewer=request.user).first()
+                if review:
+                    review.rating=form.cleaned_data["rating"]
+                    review.comment=form.cleaned_data["comment"]
+                    review.save()
+                    messages.success(request, message="Review successfully updated")
+                else:
+                    MenuReview.objects.create(
+                        menu=self.get_object(),
+                        reviewer=request.user,
+                        rating=form.cleaned_data["rating"],
+                        comment=form.cleaned_data["comment"]
+                    )
+                    messages.success(request, message="Review successfully submitted")
                 return redirect("restaurants:menu-list", cafeteria_slug=kwargs["cafeteria_slug"])
             else:
                 messages.error(request, message="Failed to submit review")

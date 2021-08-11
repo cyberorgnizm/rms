@@ -117,11 +117,20 @@
                 <small>{{menu.description}}</small>
               </p>
               {% if user.is_student or user.is_lecturer %}
-                <a
-                href="{% url 'orders:cart_add' menu.id %}"
-                class="btn btn-sm btn-outline-secondary w-100"
-                >Add</a
-              >
+              {{cart_ids}}
+                {% if menu.id in card_items_id %}
+                  <a
+                  href="#"
+                  class="btn btn-sm btn-primary w-100 disabled"
+                  >Added to cart</a
+                >
+                {% else %}
+                  <a
+                  href="{% url 'orders:cart_add' object.slug  menu.id %}"
+                  class="btn btn-sm btn-outline-primary w-100"
+                  >Add to cart</a
+                >
+                {% endif %}
               {% endif %}
             </div>
           </div>
@@ -179,6 +188,37 @@
                   <small class="d-block">Ratings: {{review.rating}}</small>
                 </strong>
                 <span>{{review.reviewer}}</span>
+                
+                <!-- edit previous review -->
+                {% if review.reviewer == request.user %}
+                <!-- Review Modal -->
+                <div class="modal fade" id="reviewModal" tabindex="-1" role="dialog"
+                aria-labelledby="reviewModalTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="reviewModalTitle">Edit Review</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <form method="post">
+                        <fieldset>
+                          {% csrf_token %}
+                          {% for field in editform %}
+                          <label for="{{field.label_id}}">aa{{field.label}}</label>
+                          {{field}} {% endfor %}
+                        </fieldset>
+                        <div class="form-submit mt-3">
+                          <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                </div>
+
+                <a href="#" class="btn btn-sm btn-white mt-3" data-bs-toggle="modal" data-bs-target="#reviewModal"><i class="icon-xs" data-feather="edit"></i></a>
+                {% endif %}
               </div>
               {% endfor %}
             </div>
