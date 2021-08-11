@@ -8,7 +8,7 @@
       Orders
     </h3>
   </div>
-  <p>Below are your most recent orders</p>
+  <p>Order history</p>
   <div class="d-flex">
     <p class="text-secondary me-5"><strong>{{pending_orders|length}}</strong> orders pending</p>
     <p class="text-success me-5"><strong>{{completed_orders|length}}</strong> orders fulfilled</p>
@@ -69,9 +69,9 @@
       </table>
     </div>
   {% else %}
-    <div class="text-center mt-10">
+    <div class="text-center mt-10 mb-10">
       <i class="icon-xxl" data-feather="shopping-cart"></i>
-      <p class="mt-5">You have 0 items in your cart, please add items before you checkout</p>
+      <p class="mt-5">You have 0 items in your order history</p>
     </div>
   {% endif %}
 </div>
