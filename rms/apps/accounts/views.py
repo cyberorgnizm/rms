@@ -1,3 +1,4 @@
+import uuid
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.views import LoginView as BaseLoginView
@@ -8,11 +9,11 @@ from django.urls import reverse_lazy, reverse
 from . import forms, models
 
 
-class RegistrationView(generic.FormView):
+class StudentRegistrationView(generic.FormView):
     form_class = forms.StudentForm
     success_url = reverse_lazy('login')
-    template_name = "registration/signup.html"
-    
+    template_name = "registration/student-signup.html"
+
     @transaction.atomic
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -33,11 +34,45 @@ class RegistrationView(generic.FormView):
             user=user,
             level=form.cleaned_data["level"],
             matric=form.cleaned_data["matric"],
+            department=form.cleaned_data["department"],
             admission_year=form.cleaned_data["admission_year"],
             student_address=form.cleaned_data["student_address"]
         )
 
         return response
+
+
+
+class LecturerRegistrationView(generic.FormView):
+    form_class = forms.LecturerForm
+    success_url = reverse_lazy('login')
+    template_name = "registration/lecturer-signup.html"
+    
+    @transaction.atomic
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        # Create user to be associated with student
+        user = get_user_model().objects.create(
+            username=form.cleaned_data["username"],
+            first_name=form.cleaned_data["first_name"],
+            last_name=form.cleaned_data["last_name"],
+            email=form.cleaned_data["email"],
+            gender=form.cleaned_data["gender"],
+            phone=form.cleaned_data["phone"],
+            is_lecturer=True
+        )
+        user.set_password(form.cleaned_data.get('password'))
+        user.save()
+
+        models.Lecturer.objects.create(
+            user=user,
+            staff_id=str(uuid.uuid4()),
+            department=form.cleaned_data["department"],
+            lecturer_address=form.cleaned_data["lecturer_address"]
+        )
+
+        return response
+
 
 
 class LoginView(BaseLoginView):

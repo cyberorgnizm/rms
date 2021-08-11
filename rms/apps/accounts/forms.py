@@ -133,6 +133,36 @@ class StudentForm(UserForm):
     )
 
 
+class LecturerForm(UserForm):
+    field_order = [
+        'avatar',
+        'username',
+        'password',
+        'confirm_password',
+        'photo',
+        'first_name',
+        'last_name',
+        'email',
+        'phone',
+        'gender',
+        'department',
+        'lecturer_address'
+    ]
+
+    department = forms.ModelChoiceField(
+        queryset=models.Department.objects.all(),
+        widget=forms.Select(
+            attrs={'class': 'form-select form-select-sm'}
+        )
+    )
+
+    lecturer_address = forms.CharField(
+        label="Address",
+        widget=forms.Textarea(
+            attrs={'class': 'form-control form-control-sm'}
+        )
+    )
+
 class WorkerForm(UserForm):
     field_order = [
         'avatar',
