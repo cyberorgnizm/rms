@@ -76,6 +76,7 @@ class Lecturer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     department = models.ForeignKey('Department', related_name="lecturers", on_delete=models.SET_NULL, null=True)
     staff_id = models.CharField(max_length=255)
+    lecturer_address = models.TextField(null=True, blank=True, default=str)
 
     def __str__(self):
         return f"{self.user}"

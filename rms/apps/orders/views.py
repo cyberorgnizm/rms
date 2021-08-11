@@ -32,60 +32,67 @@ class CheckoutPurchasesView(LoginRequiredMixin, generic.TemplateView):
             order_set = set()
             # set of menu present in cart
             menu_set = set()
-            for _, item in request.session.get('cart').items():
-                menu = Menu.objects.get(id=item["product_id"])
-                menu_set.add(menu)
+            if request.user.is_student or request.user.is_lecturer:
+                for _, item in request.session.get('cart').items():
+                    menu = Menu.objects.get(id=item["product_id"])
+                    menu_set.add(menu)
 
-                cafeteria_name = menu.cafeteria.name
-                cafeteria = Cafeteria.objects.get(name=cafeteria_name)
+                    cafeteria_name = menu.cafeteria.name
+                    cafeteria = Cafeteria.objects.get(name=cafeteria_name)
 
-                if not cafeteria in cafeteria_set:
-                    order = PurchaseOrder.objects.create(
-                        order_id=uuid.uuid4(),
-                        cafeteria=cafeteria,
-                        student=request.user.student,
-                        status='pending',
-                        delivery_mode='pickup',
-                        delivery_address=request.user.student.student_address
-                    )
-                    # verify transaction
-                    if request.is_ajax():
-                        body = json.loads(request.body)
-                        response = requests.get(f"https://api.paystack.co/transaction/verify/{body['reference']}", headers={
-                            "Authorization": f"Bearer {os.environ['PAYSTACK_SECRET']}"
-                        }).json()
+                    if not cafeteria in cafeteria_set:
+                        order = PurchaseOrder.objects.create(
+                            order_id=uuid.uuid4(),
+                            cafeteria=cafeteria,
+                            user=request.user,
+                            status='pending',
+                            delivery_mode='pickup',
+                        )
+                        if request.user.is_student:
+                            order.delivery_address = request.user.student.student_address
+                            order.save()
+                        else:
+                            order.delivery_address = request.user.lecturer.lecturer_address
+                        # verify transaction
+                        if request.is_ajax():
+                            body = json.loads(request.body)
+                            response = requests.get(f"https://api.paystack.co/transaction/verify/{body['reference']}", headers={
+                                "Authorization": f"Bearer {os.environ['PAYSTACK_SECRET']}"
+                            }).json()
 
-                        if response['message'] == "Verification successful":
-                            Invoice.objects.create(
-                                invoice_id=uuid.uuid4(),
-                                order=order,
-                                payment_reference=int(body['reference']),
-                                cafeteria=order.cafeteria,
-                                student=order.student,
-                                due_date=timezone.now()
-                            )
-                    cafeteria_set.add(cafeteria)
-                    order_set.add(order)
+                            if response['message'] == "Verification successful":
+                                Invoice.objects.create(
+                                    invoice_id=uuid.uuid4(),
+                                    order=order,
+                                    payment_reference=int(body['reference']),
+                                    cafeteria=order.cafeteria,
+                                    user=order.user,
+                                    due_date=timezone.now()
+                                )
+                        cafeteria_set.add(cafeteria)
+                        order_set.add(order)
 
-            for menu, cart_item in zip(menu_set, request.session.get('cart').items()):
-                cart_menu = cart_item[1]
-                quantity = int(cart_menu['quantity'])
-                # filter order where menu cafeteria matches
-                orders = [order for order in order_set if order.cafeteria == menu.cafeteria]
-                if orders:
-                    purchase_order = orders[0]
-                    line = PurchaseLine.objects.create(
-                        order=purchase_order,
-                        menu=menu,
-                        quantity=quantity,
-                        total_price=menu.price * quantity
-                    )
-                    # update total price for order after total price for line item is calculated
-                    purchase_order.total_price += float(line.total_price)
-                    purchase_order.save()
+                for menu, cart_item in zip(menu_set, request.session.get('cart').items()):
+                    cart_menu = cart_item[1]
+                    quantity = int(cart_menu['quantity'])
+                    # filter order where menu cafeteria matches
+                    orders = [order for order in order_set if order.cafeteria == menu.cafeteria]
+                    if orders:
+                        purchase_order = orders[0]
+                        line = PurchaseLine.objects.create(
+                            order=purchase_order,
+                            menu=menu,
+                            quantity=quantity,
+                            total_price=menu.price * quantity
+                        )
+                        # update total price for order after total price for line item is calculated
+                        purchase_order.total_price += float(line.total_price)
+                        purchase_order.save()
+            else:
+                messages.error(request, message="Only lecturers and/or students are allowed to place order.")
+                return redirect(request.get_raw_uri())
         except Exception as exp:
-            messages.add_message(request, messages.ERROR, str(exp))
-            print(exp)
+            messages.error(request, message=str(exp))
             # TODO: handle exception when performing above computations
             return redirect(request.get_raw_uri())
         else:
@@ -110,9 +117,8 @@ class PurchaseOrderListView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        if self.request.user.is_student:
-            student = Student.objects.get(user=self.request.user)
-            queryset = queryset.filter(student=student)
+        if self.request.user.is_student or self.request.user.is_lecturer:
+            queryset = queryset.filter(user=self.request.user)
             return queryset
         elif self.request.user.is_worker:
             worker = Worker.objects.get(user=self.request.user)
@@ -140,11 +146,8 @@ class PurchaseOrderDetailView(LoginRequiredMixin, generic.DetailView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        if self.request.user.is_student:
-            student = Student.objects.get(user=self.request.user)
-            queryset = queryset.filter(student=student)
-            return queryset
-        elif self.request.user.is_worker:
+        if self.request.user.is_student or self.request.user.is_lecturer:
+            queryset = queryset.filter(user=self.request.user)
             return queryset
         return queryset
 
@@ -225,14 +228,11 @@ def process_order_line(request, **kwargs):
 # ------------------------------------------------------------------------
 
 @login_required(login_url="/accounts/login")
-def cart_add(request, id):
+def cart_add(request, cafeteria_slug, id):
     cart = Cart(request)
     product = Menu.objects.get(id=id)
     cart.add(product=product)
-    if request.is_ajax():
-        return redirect("home")
-    else:
-        return redirect("home")
+    return redirect(f"restaurants:cafeteria-detail", cafeteria_slug=cafeteria_slug)
 
 
 @login_required(login_url="/accounts/login")
