@@ -172,6 +172,78 @@
       </div>
     </section>
     {% endif %}
+
+    <!-- menu section -->
+    {% if top_menus %}
+    <section class="page-section mt-10 mb-10" id="cafeteria">
+      <div class="text-center">
+        <h3 class="section-heading text-uppercase mt-5">Top Menus</h3>
+      </div>
+      <div class="container mt-10">
+        <div class="row">
+          {% for menu in top_menus %}
+          <div class="col-md-4">
+            <div class="card rounded-3 h-100" style="width: 18rem">
+              <img
+                src="{{menu.image.url}}"
+                alt="{{menu}}"
+                class="card-img-top"
+              />
+              <!-- card body -->
+              <div class="card-body">
+                <h5 class="card-title">
+                  <span
+                    class="
+                      icon-shape icon-sm
+                      bg-light-primary
+                      text-primary
+                      rounded-1
+                    "
+                  >
+                    <i class="bi bi-shop"></i>
+                  </span>
+                  <a href="{% url 'restaurants:menu-detail' menu.cafeteria.slug menu.slug %}">
+                    <span class="fw-bold">{{menu.name}}</span>
+                  </a>
+                </h5>
+                <h5 class="card-subtitle">
+                  <span
+                    class="
+                      icon-shape icon-sm
+                      bg-light-primary
+                      text-primary
+                      rounded-1
+                    "
+                  >
+                    <i class="bi bi-cash-coin"></i>
+                  </span>
+                  <span>&#8358;{{menu.price}}</span>
+                </h5>
+                <div class="card-text mt-3"></div>
+              </div>
+              <div class="card-footer">
+                <u class="card-title text-center text-dark d-block">Reviews (Avg)</u>
+                <div class="text-center">
+                  <span
+                    class="
+                      icon-shape icon-sm
+                      bg-light-primary
+                      text-primary
+                      rounded-1
+                    "
+                  >
+                    <i class="bi bi-star-fill text-warning"></i>
+                  </span>
+                  <span class="text-dark">{{menu.avg_reviews}} stars</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+    {% endif %}
   </div>
   {% include 'pages/includes/footer.html' %}
 </div {% endblock %}>
