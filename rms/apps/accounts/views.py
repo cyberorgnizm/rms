@@ -2,8 +2,9 @@ import uuid
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.views import LoginView as BaseLoginView
+from django.contrib import messages
 from django.db import transaction
-from django.http import HttpResponseForbidden, HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect
 from django.views import generic
 from django.urls import reverse_lazy, reverse
 from . import forms, models
@@ -97,9 +98,9 @@ class ProfileView(LoginRequiredMixin, generic.DetailView):
         from rms.apps.orders.models import PurchaseOrder
 
         context = super().get_context_data(**kwargs)
-        if self.request.user.is_student:
+        if self.request.user.is_student or  self.request.user.is_lecturer:
             user = self.model.objects.get(id=self.request.user.id)
-            orders = PurchaseOrder.objects.filter(student=user.student)
+            orders = PurchaseOrder.objects.filter(user=user)
             context["orders"] = orders
         elif self.request.user.is_worker:
             user = self.model.objects.get(id=self.request.user.id)
@@ -137,7 +138,6 @@ class EditProfileView(LoginRequiredMixin, generic.TemplateView):
         data = self.get_user_data()
 
         if self.request.user.is_student:
-            print(self.request.user.student.admission_year)
             student = self.request.user.student
             # TODO: so is this one
             data["matric"] = student.matric
@@ -145,6 +145,11 @@ class EditProfileView(LoginRequiredMixin, generic.TemplateView):
             data["department"] = student.department
             data["student_address"] = student.student_address
             context["form"] = forms.StudentForm(data)
+        elif self.request.user.is_lecturer:
+            lecturer = self.request.user.lecturer
+            data["department"] = lecturer.department
+            data["lecturer_address"] = lecturer.lecturer_address
+            context["form"] = forms.LecturerForm(data)
         elif self.request.user.is_worker:
             worker = self.request.user.worker
             data["worker_role"] = worker.worker_role
@@ -167,23 +172,47 @@ class EditProfileView(LoginRequiredMixin, generic.TemplateView):
                 user.save()
                 user.worker.worker_role=form.cleaned_data["worker_role"]
                 user.worker.save()
-        elif user.is_student:
-            form = forms.StudentForm(request.POST)
-            if form.is_valid():
-                # FIXME: seriously...
-                user.username=form.cleaned_data["username"]
-                user.first_name=form.cleaned_data["first_name"]
-                user.last_name=form.cleaned_data["last_name"]
-                user.email=form.cleaned_data["email"]
-                user.gender=form.cleaned_data["gender"]
-                user.phone=form.cleaned_data["phone"]
-                user.save()
-                user.student.matric=form.cleaned_data["matric"]
-                user.student.level=form.cleaned_data["level"]
-                # user.student.department=form.cleaned_data["department"]
-                user.student.admission_year=form.cleaned_data["admission_year"]
-                user.student.student_address=form.cleaned_data["student_address"]
-                user.student.save()
+            else:
+                messages.error(request, form.errors)
+                return HttpResponseRedirect(reverse('accounts:setting', kwargs={'username': user.username}))
+        elif user.is_student or user.is_lecturer:
+            if user.is_student:
+                form = forms.StudentForm(request.POST)
+                if form.is_valid():
+                    # FIXME: seriously...
+                    user.username=form.cleaned_data["username"]
+                    user.first_name=form.cleaned_data["first_name"]
+                    user.last_name=form.cleaned_data["last_name"]
+                    user.email=form.cleaned_data["email"]
+                    user.gender=form.cleaned_data["gender"]
+                    user.phone=form.cleaned_data["phone"]
+                    user.save()
+                    user.student.matric=form.cleaned_data["matric"]
+                    user.student.level=form.cleaned_data["level"]
+                    user.student.department=form.cleaned_data["department"]
+                    user.student.admission_year=form.cleaned_data["admission_year"]
+                    user.student.student_address=form.cleaned_data["student_address"]
+                    user.student.save()
+                else:
+                    messages.error(request, form.errors)
+                    return HttpResponseRedirect(reverse('accounts:setting', kwargs={'username': user.username}))
+            else:
+                form = forms.LecturerForm(request.POST)
+                if form.is_valid():
+                    # FIXME: seriously...
+                    user.username=form.cleaned_data["username"]
+                    user.first_name=form.cleaned_data["first_name"]
+                    user.last_name=form.cleaned_data["last_name"]
+                    user.email=form.cleaned_data["email"]
+                    user.gender=form.cleaned_data["gender"]
+                    user.phone=form.cleaned_data["phone"]
+                    user.save()
+                    user.lecturer.department=form.cleaned_data["department"]
+                    user.lecturer.lecturer_address=form.cleaned_data["lecturer_address"]
+                    user.lecturer.save()
+                else:
+                    messages.error(request, form.errors)
+                    return HttpResponseRedirect(reverse('accounts:setting', kwargs={'username': user.username}))
         # check image upload
         upload = request.FILES.get('filepond', None)
         if upload:

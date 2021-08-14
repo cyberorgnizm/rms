@@ -16,8 +16,11 @@
               align-items-center
               justify-content-between
             "
-          >
+            >
             <div class="mb-2 mb-lg-0">
+              <div class="mb-4">
+                <a href="{% url 'accounts:profile' user.username %}">Back to Profile</a>
+              </div>
               <h3 class="mb-0 fw-bold">General</h3>
             </div>
           </div>
@@ -30,6 +33,11 @@
           <h4 class="mb-1">General Setting</h4>
           <p class="mb-0 fs-5 text-muted">Profile configuration settings</p>
         </div>
+        {% if messages %}
+          {% for message in messages %}
+            <p>{{message}}</p>
+          {% endfor %}
+        {% endif %}
       </div>
 
       <div class="col-xl-8 col-lg-8 col-md-12 col-12">
@@ -143,6 +151,7 @@
                     >
                     {{form.gender}}
                   </div>
+                  {% if user.is_student or user.is_lecturer %}
                   {% if user.is_student %}
                   <!-- Matric and Level -->
                   <div class="col-4 mb-3">
@@ -159,6 +168,7 @@
                     >
                     {{form.level}}
                   </div>
+                  {% endif %}
                   <!-- Department -->
                   <div class="col-6 mb-3">
                     {{form.department.errors}}
@@ -171,6 +181,7 @@
                   </div>
                   <!-- Address -->
                   <div class="col-12 mb-3">
+                    {% if user.is_student %}
                     {{form.student_address.errors}}
                     <label
                       for="{{form.student_address.id_for_label}}"
@@ -178,6 +189,15 @@
                       >Address</label
                     >
                     {{form.student_address}}
+                    {% else %}
+                    {{form.lecturer_address.errors}}
+                    <label
+                      for="{{form.lecturer_address.id_for_label}}"
+                      class="form-label"
+                      >Address</label
+                    >
+                    {{form.lecturer_address}}
+                    {% endif %}
                   </div>
                   {% elif user.is_worker %}
                   <div class="col-4">

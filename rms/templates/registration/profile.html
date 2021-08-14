@@ -120,7 +120,7 @@
                 >Overview</a
               >
             </li>
-            {% if user.is_student or user.is_worker %}
+            {% if user.is_student or user.is_lecturer or user.is_worker %}
             <li class="nav-item">
               <a class="nav-link" data-bs-toggle="pill" href="#pills-orders"
                 >Orders</a
@@ -198,7 +198,7 @@
               </div>
             </div>
           </div>
-          {% if user.is_student %}
+          {% if user.is_student or user.is_lecturer %}
             <div class="col-xl-6 col-lg-12 col-md-12 col-12 mb-6">
               <!-- card -->
               <div class="card h-100">
@@ -207,6 +207,7 @@
                   <!-- card title -->
                   <h4 class="card-title text-center mb-4">Info</h4>
                   <div class="row">
+                    {% if user.is_student %}
                     <div class="col-12 mb-5">
                       <!-- text -->
                       <h6 class="text-uppercase fs-5 ls-2">Metriculation Number</h6>
@@ -214,17 +215,19 @@
                         {{user.student.matric}}
                       </p>
                     </div>
+                    {% endif %}
                     <div class="col-12 mb-5">
                       <!-- text -->
                       <h6 class="text-uppercase fs-5 ls-2">Gender</h6>
                       <p class="mb-0">
-                        {% if user.student.gender == 'M' %}
+                        {% if user.gender == 'M' %}
                           Male
                         {% else %}
                           Female
                         {% endif %}
                       </p>
                     </div>
+                    {% if user.is_student %}
                     <div class="col-12 mb-5">
                       <!-- text -->
                       <h6 class="text-uppercase fs-5 ls-2">Level</h6>
@@ -232,12 +235,19 @@
                         {{user.student.level}}
                       </p>
                     </div>
+                    {% endif %}
                     <div class="col-12 mb-5">
                       <!-- text -->
                       <h6 class="text-uppercase fs-5 ls-2">Department</h6>
+                      {% if user.is_student %}
                       <p class="mb-0">
                         {{user.student.department}}
                       </p>
+                      {% else %}
+                      <p class="mb-0">
+                        {{user.lecturer.department}}
+                      </p>
+                      {% endif %}
                     </div>
                   </div>
                 </div>
@@ -360,7 +370,7 @@
           {% endif %} 
         </div>
       </div>
-      {% if user.is_student or user.is_worker %}
+      {% if user.is_student or user.is_lecturer or user.is_worker %}
         <div
           class="tab-pane fade"
           id="pills-orders"
