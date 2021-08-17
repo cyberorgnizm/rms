@@ -12,6 +12,7 @@ gunicorn = "*"
 django-heroku = "*"
 whitenoise = "*"
 requests = "*"
+pandas = "*"
 
 [dev-packages]
 
