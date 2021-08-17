@@ -48,7 +48,7 @@ class Menu(models.Model):
     MENU_TYPES = (
         ('food', 'Food'), 
         ('drink', 'Drink'),
-        ('snack', 'Snack'),
+        ('dessert', 'Dessert'),
     )
 
     cafeteria = models.ForeignKey('Cafeteria', related_name="menus", on_delete=models.CASCADE)
