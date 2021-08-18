@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from os import getenv
 from pathlib import Path
 import django_heroku
+import cloudinary
+import cloudinary_storage
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,10 +24,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-v4fc+lf%&i1)9vkwn+=e4@+k%_l8_c(nzytos36la*)algzp2s'
+SECRET_KEY = getenv('SECRET_KEY', 'django-insecure-v4fc+lf%&i1)9vkwn+=e4@+k%_l8_c(nzytos36la*)algzp2s')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = getenv('DEBUG', True)
 
 ALLOWED_HOSTS = []
 
@@ -43,6 +45,9 @@ INSTALLED_APPS = [
     # Third-party apps
     'cart',
     'phonenumber_field',
+    # Media Cloudinary
+    'cloudinary',
+    'cloudinary_storage',
 
     # RMS Applications
     'rms.apps.accounts',
@@ -164,6 +169,16 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Django shopping cart settings
 CART_SESSION_ID = 'cart'
+
+
+# Cloudinary settings
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': getenv('CLOUDINARY_CLOUD_NAME', ''),
+    'API_KEY': getenv('CLOUDINARY_API_KEY', ''),
+    'API_SECRET': getenv('CLOUDINARY_API_SECRET', ''),
+}
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Activate Django-Heroku.
 django_heroku.settings(locals())
