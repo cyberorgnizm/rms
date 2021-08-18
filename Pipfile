@@ -13,6 +13,8 @@ django-heroku = "*"
 whitenoise = "*"
 requests = "*"
 pandas = "*"
+cloudinary = "*"
+django-cloudinary-storage = "*"
 
 [dev-packages]
 
