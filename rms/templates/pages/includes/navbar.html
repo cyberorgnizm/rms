@@ -26,6 +26,8 @@
           >Cafeterias</a
         >
       </li>
+      <!-- Auth nav -->
+      {% if user.is_authenticated %}
       <li class="nav-item">
         <a class="nav-link" href="{% url 'orders:purchases' %}">Orders</a>
       </li>
@@ -74,6 +76,8 @@
         </div>
       </li>
       {% endif %}
+      {% endif %}
+      <!-- End Auth nav -->
     </ul>
     <!--Navbar nav -->
     <ul class="navbar-nav navbar-right-wrap mx-5 d-flex nav-top-wrap">

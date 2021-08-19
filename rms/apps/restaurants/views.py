@@ -1,10 +1,9 @@
 from django.shortcuts import redirect
-from django.db.models import F
 from django.views import generic
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
-from rms.apps.accounts.models import Lecturer, Student, Worker
+from rms.apps.accounts.models import Worker
 from .models import Cafeteria, CafeteriaReview, Menu, MenuReview
 from .forms import ReviewForm, MenuForm
 
@@ -85,6 +84,7 @@ class CafeteriaMenuList(generic.ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["form"] = MenuForm()
+        context['cafeteria'] = Cafeteria.objects.filter(slug=self.kwargs['cafeteria_slug']).first()
         return context
 
 
@@ -123,13 +123,14 @@ class CafeteriaMenuDetail(generic.DetailView):
         menu = self.get_object()
         reviews = menu.reviews.all()
         _include_form = True
-        if self.request.user.is_worker and self.request.user.worker.worker_role == "manager":
-                context["menu_form"] = MenuForm(data={
-                    "name": menu.name,
-                    "price":menu.price,
-                    "description": menu.description,
-                    "menu_type": menu.menu_type,
-                })
+        if self.request.user.is_authenticated:
+            if self.request.user.is_worker and self.request.user.worker.worker_role == "manager":
+                    context["menu_form"] = MenuForm(data={
+                        "name": menu.name,
+                        "price":menu.price,
+                        "description": menu.description,
+                        "menu_type": menu.menu_type,
+                    })
         context["reviews"] = reviews
         for review in reviews:
             if review.reviewer.username == self.request.user.username:

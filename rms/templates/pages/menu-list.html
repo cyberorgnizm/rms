@@ -1,14 +1,22 @@
 {% extends 'pages/base.html'%} {% block main %}
 <div class="mb-20">
   <!-- Page content -->
-  <div>
-    <div class="text-center mt-15 mb-10">
-      <h3
-        class="display-6"
-        style="text-decoration: underline; text-decoration-color: blueviolet"
-      >
-        Our Menus
-      </h3>
+  <div class="container">
+    <div class="row mt-8 mt-m-12">
+      <div class="col-6 mx-auto mx-md-0 mb-4 mt-8">
+        <a href="{% url 'restaurants:cafeteria-detail' cafeteria.slug %}" class="btn btn-link">Back to Cafeteria</a>
+      </div>
+      <div class="col-12 mb-4">
+        <p
+          class="h1 section-heading text-center text-uppercase"
+          style="
+            text-decoration: underline;
+            text-decoration-color: blueviolet;
+          "
+        >
+          Our Menus
+        </p>
+      </div>
     </div>
     <div class="container">
       <div class="row">
@@ -66,12 +74,12 @@
         {% endif %} 
         
         {% for menu in object_list %}
-        <div class="col-md-3">
+        <div class="col-md-3 mb-5">
           <div class="card rounded-3 h-100" style="width: 15rem; margin: auto">
             <img src="{{menu.image.url}}" alt="{{menu}}" class="card-img-top" />
             <!-- card body -->
             <div class="card-body">
-              <h5 class="card-title fw-bold">
+              <h5 class="card-title">
                 <a
                   href="{% url 'restaurants:menu-detail' menu.cafeteria.slug menu.slug %}"
                 >

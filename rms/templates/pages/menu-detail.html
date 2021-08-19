@@ -1,7 +1,21 @@
 {% extends 'pages/base.html'%} {% block main %}
 <div>
   <div class="container">
-    <div class="row mt-12">
+    <div class="row mt-8 mt-m-12">
+      <div class="col-6 mx-auto mx-md-0 mb-4 mt-8">
+        <a href="{% url 'restaurants:cafeteria-detail' object.cafeteria.slug %}" class="btn btn-link">Back to Cafeteria</a>
+      </div>
+      <div class="col-12 text-center mb-4">
+        <p
+          class="h1 section-heading text-uppercase"
+          style="
+            text-decoration: underline;
+            text-decoration-color: blueviolet;
+          "
+        >
+          Menu Detail
+        </p>
+      </div>
       <div class="col-12" style="height: 400px">
         <div
           style="
@@ -28,18 +42,8 @@
     </div>
     <section class="page-section">
       <div class="row">
-        <div class="col-12 d-flex justify-content-center">
-          <p
-            class="h1 section-heading text-uppercase text-center mt-8"
-            style="
-              text-decoration: underline;
-              text-decoration-color: blueviolet;
-            "
-          >
-            Menu Detail
-          </p>
-        </div>
-        {% if user.is_worker and user.worker.worker_role == "manager"%} 
+        
+        {% if user.is_authenticated and user.is_worker and user.worker.worker_role == "manager"%} 
           <div class="col-6 mx-auto">
             <form method="post">
               {% csrf_token %}
@@ -49,109 +53,114 @@
           </div>
         {% else %}
         <div class="col-12">
-          <div>
-            <p class="text-dark mb-2">
-              <span class="text-uppercase">Title</span>: {{object.name}}
+          <div class="my-5">
+            <p class="display-6 text-dark text-truncate mb-2" title="{{object.name}}">
+              Name: <strong>{{object.name}}</strong>
             </p>
-            <p class="text-dark mb-2">
-              <span class="text-uppercase">Type</span>:
-              {{object.menu_type|title}}
+            <p class="display-6 text-dark text-truncate mb-2">
+              Category: <strong>{{object.menu_type|title}}</strong>
             </p>
-            <p class="text-dark mb-2">
-              <span class="text-uppercase">Price</span>: &#8358;{{object.price}}
+            <p class="display-6 text-dark text-truncate mb-2">
+              Price: <strong>&#8358;{{object.price}}</strong>
             </p>
-            <p class="text-dark mb-2">
-              <span class="text-uppercase">Description</span>:
-              {{object.description}}
+            <p class="h2 text-dark text-center mb-2 mt-10">
+              Description
             </p>
+            <div class="col-10 col-md-8 mx-auto">
+              <p class="border rounded bg-white text-capitalize p-4 mb-20">
+                {{object.description}}
+              </p>
+            </div>
           </div>
         </div>
         {% endif %}
       </div>
     </section>
-    <!-- cafeteria review -->
-    {% if user.is_student or user.is_lecturer %}
-    <section class="page-section my-5">
-      <div class="row">
-        <div class="col-12 d-flex justify-content-center my-2">
-          <p
-            class="h1 section-heading text-uppercase text-center mt-8"
-            style="
-              text-decoration: underline;
-              text-decoration-color: blueviolet;
-            "
-          >
-            Reviews
-          </p>
-        </div>
-        <div class="col-5 mx-auto">
-          {% if form %}
-          <form method="post">
-            <fieldset>
-              {% csrf_token %} {% for field in form %}
-              <label for="{{field.label_id}}">{{field.label}}</label>
-              {{field}} {% endfor %}
-            </fieldset>
-            <button type="submit" class="btn btn-md btn-primary">Submit</button>
-          </form>
-          {% endif %}
-          <!-- Reviews by customer -->
-          {% if reviews %}
-          <div class="text-center mt-8">
-            <p class="h5 text-uppercase my-5">Other Customer Reviews</p>
-            <div class="row">
-              {% for review in reviews %}
-              <div class="col-4 mx-auto p-4 rounded {% if review.reviewer == request.user %} bg-primary text-white {% endif %}">
-                <img
-                  class="avatar avatar-md rounded-circle"
-                  src="{{review.reviewer.avatar.url }}"
-                  alt="{{review.reviewer}}"
-                />
-                <blockquote class="my-2">
-                  <q><small>{{review.comment}}</small></q>
-                </blockquote>
-                <strong>
-                  <small class="d-block">Ratings: {{review.rating}}</small>
-                </strong>
-                <span>{{review.reviewer}}</span>
-                <!-- edit previous review -->
-                {% if review.reviewer == request.user %}
-                <!-- Review Modal -->
-                <div class="modal fade" id="reviewModal" tabindex="-1" role="dialog"
-                aria-labelledby="reviewModalTitle" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title" id="reviewModalTitle">Edit Review</h5>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                      <form method="post">
-                        <fieldset>
-                          {% csrf_token %}
-                          {% for field in editform %}
-                          <label for="{{field.label_id}}">aa{{field.label}}</label>
-                          {{field}} {% endfor %}
-                        </fieldset>
-                        <div class="form-submit mt-3">
-                          <button type="submit" class="btn btn-sm btn-primary">Save</button>
-                        </div>
-                      </form>
+    {% if user.is_authenticated %}
+      <!-- cafeteria review -->
+      {% if user.is_student or user.is_lecturer %}
+      <section class="page-section my-5">
+        <div class="row">
+          <div class="col-12 d-flex justify-content-center my-2">
+            <p
+              class="h1 section-heading text-uppercase text-center mt-8"
+              style="
+                text-decoration: underline;
+                text-decoration-color: blueviolet;
+              "
+            >
+              Reviews
+            </p>
+          </div>
+          <div class="col-5 mx-auto">
+            {% if form %}
+            <form method="post">
+              <fieldset>
+                {% csrf_token %} {% for field in form %}
+                <label for="{{field.label_id}}">{{field.label}}</label>
+                {{field}} {% endfor %}
+              </fieldset>
+              <button type="submit" class="btn btn-md btn-primary">Submit</button>
+            </form>
+            {% endif %}
+            <!-- Reviews by customer -->
+            {% if reviews %}
+            <div class="text-center mt-8">
+              <p class="h5 text-uppercase my-5">Other Customer Reviews</p>
+              <div class="row">
+                {% for review in reviews %}
+                <div class="col-4 mx-auto p-4 rounded {% if review.reviewer == request.user %} bg-primary text-white {% endif %}">
+                  <img
+                    class="avatar avatar-md rounded-circle"
+                    src="{{review.reviewer.avatar.url }}"
+                    alt="{{review.reviewer}}"
+                  />
+                  <blockquote class="my-2">
+                    <q><small>{{review.comment}}</small></q>
+                  </blockquote>
+                  <strong>
+                    <small class="d-block">Ratings: {{review.rating}}</small>
+                  </strong>
+                  <span>{{review.reviewer}}</span>
+                  <!-- edit previous review -->
+                  {% if review.reviewer == request.user %}
+                  <!-- Review Modal -->
+                  <div class="modal fade" id="reviewModal" tabindex="-1" role="dialog"
+                  aria-labelledby="reviewModalTitle" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="reviewModalTitle">Edit Review</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <form method="post">
+                          <fieldset>
+                            {% csrf_token %}
+                            {% for field in editform %}
+                            <label for="{{field.label_id}}">aa{{field.label}}</label>
+                            {{field}} {% endfor %}
+                          </fieldset>
+                          <div class="form-submit mt-3">
+                            <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                          </div>
+                        </form>
+                      </div>
                     </div>
                   </div>
-                </div>
-                </div>
+                  </div>
 
-                <a href="#" class="btn btn-sm btn-white mt-3" data-bs-toggle="modal" data-bs-target="#reviewModal"><i class="icon-xs" data-feather="edit"></i></a>
-                {% endif %}
+                  <a href="#" class="btn btn-sm btn-white mt-3" data-bs-toggle="modal" data-bs-target="#reviewModal"><i class="icon-xs" data-feather="edit"></i></a>
+                  {% endif %}
+                </div>
+                {% endfor %}
               </div>
-              {% endfor %}
             </div>
+            {% endif %}
           </div>
-          {% endif %}
         </div>
-      </div>
-    </section>
+      </section>
+      {% endif %}
     {% endif %}
   </div>
 </div>
