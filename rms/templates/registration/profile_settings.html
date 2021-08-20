@@ -51,10 +51,7 @@
             <form method="POST" enctype="multipart/form-data">
               {% csrf_token %} {% if user.avatar %}
               <div class="row align-items-center mb-8">
-                <div class="col-md-3">
-                  <h5 class="mb-0">Photo</h5>
-                </div>
-                <div class="col-md-9">
+                <div class="col-md-10 mx-auto">
                   <div class="d-flex justify-content-center align-items-center">
                     <div class="me-3">
                       <img
@@ -68,27 +65,17 @@
                         alt="{{user.username}}"
                       />
                     </div>
-                    <div class="me-3">
-                      <button
-                        disabled
-                        type="submit"
-                        class="btn btn-sm btn-outline-primary me-1"
-                      >
-                        Change
-                      </button>
-                      <button
-                        disabled
-                        type="submit"
-                        class="btn btn-sm btn-outline-danger"
-                      >
-                        Remove
-                      </button>
+                    <div class="input-group-sm mb-3 me-3">
+                      <input type="file" name="avatar" class="form-control" id="avatarInput">
                     </div>
                   </div>
                 </div>
               </div>
               {% else %}
-              <!-- <input type="file" class="filepond" name="filepond" /> -->
+              <div class="input-group-sm mb-3">
+                <label class="input-group-text" for="avatarInput">Upload</label>
+                <input type="file" name="avatar" class="form-control" id="avatarInput">
+              </div>
               {% endif %}
               <div>
                 <!-- border -->
@@ -247,6 +234,11 @@
             </div>
             <div>
               <!-- text -->
+              <div class="alert alert-warning d-flex align-items-center" role="alert">
+                <div>
+                  This is an experimental feature and isn't currently enabled please contact the admin to delete your account
+                </div>
+              </div>
               <p>
                 <small
                   >Delete any and all content you have, such as biodata,
@@ -254,7 +246,7 @@
                   Allow your username to become available to anyone.</small
                 >
               </p>
-              <a href="#" class="btn btn-sm btn-danger">Delete Account</a>
+              <a href="#" class="btn btn-sm btn-danger disabled" title="This feature isn't currently enabled please contact the admin to delete your account">Delete Account</a>
               <p class="small mb-0 mt-3">
                 Feel free to contact the <a href="#">Admin</a> with any
                 questions.

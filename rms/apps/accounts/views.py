@@ -1,3 +1,4 @@
+import os
 import uuid
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import get_user_model
@@ -5,6 +6,7 @@ from django.contrib.auth.views import LoginView as BaseLoginView
 from django.contrib import messages
 from django.db import transaction
 from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
 from django.views import generic
 from django.urls import reverse_lazy, reverse
 from . import forms, models
@@ -18,30 +20,35 @@ class StudentRegistrationView(generic.FormView):
     @transaction.atomic
     def form_valid(self, form):
         response = super().form_valid(form)
-        # Create user to be associated with student
-        user = get_user_model().objects.create(
-            username=form.cleaned_data["username"],
-            first_name=form.cleaned_data["first_name"],
-            last_name=form.cleaned_data["last_name"],
-            email=form.cleaned_data["email"],
-            gender=form.cleaned_data["gender"],
-            phone=form.cleaned_data["phone"],
-            is_student=True
-        )
-        user.set_password(form.cleaned_data.get('password'))
-        user.save()
-
-        models.Student.objects.create(
-            user=user,
-            level=form.cleaned_data["level"],
-            matric=form.cleaned_data["matric"],
-            department=form.cleaned_data["department"],
-            admission_year=form.cleaned_data["admission_year"],
-            student_address=form.cleaned_data["student_address"]
-        )
-
-        return response
-
+        try:
+            # Create user to be associated with student
+            user = get_user_model().objects.create(
+                username=form.cleaned_data["username"],
+                first_name=form.cleaned_data["first_name"],
+                last_name=form.cleaned_data["last_name"],
+                email=form.cleaned_data["email"],
+                gender=form.cleaned_data["gender"],
+                phone=form.cleaned_data["phone"],
+                is_student=True
+            )
+            # set profile picture if uploaded
+            if form.cleaned_data["avatar"]:
+                user.avatar = form.cleaned_data["avatar"]
+            user.set_password(form.cleaned_data.get('password'))
+            user.save()
+            # Create student account
+            models.Student.objects.create(
+                user=user,
+                level=form.cleaned_data["level"],
+                matric=form.cleaned_data["matric"],
+                department=form.cleaned_data["department"],
+                admission_year=form.cleaned_data["admission_year"],
+                student_address=form.cleaned_data["student_address"]
+            )
+            return response
+        except Exception as exc:
+            messages.error(self.request, str(exc))
+            return redirect(reverse('accounts:signup_student'))
 
 
 class LecturerRegistrationView(generic.FormView):
@@ -52,28 +59,34 @@ class LecturerRegistrationView(generic.FormView):
     @transaction.atomic
     def form_valid(self, form):
         response = super().form_valid(form)
-        # Create user to be associated with student
-        user = get_user_model().objects.create(
-            username=form.cleaned_data["username"],
-            first_name=form.cleaned_data["first_name"],
-            last_name=form.cleaned_data["last_name"],
-            email=form.cleaned_data["email"],
-            gender=form.cleaned_data["gender"],
-            phone=form.cleaned_data["phone"],
-            is_lecturer=True
-        )
-        user.set_password(form.cleaned_data.get('password'))
-        user.save()
+        try:
+            # Create user to be associated with student
+            user = get_user_model().objects.create(
+                username=form.cleaned_data["username"],
+                first_name=form.cleaned_data["first_name"],
+                last_name=form.cleaned_data["last_name"],
+                email=form.cleaned_data["email"],
+                gender=form.cleaned_data["gender"],
+                phone=form.cleaned_data["phone"],
+                is_lecturer=True
+            )
+            # set profile picture if uploaded
+            if form.cleaned_data["avatar"]:
+                user.avatar = form.cleaned_data["avatar"]
+            user.set_password(form.cleaned_data.get('password'))
+            user.save()
 
-        models.Lecturer.objects.create(
-            user=user,
-            staff_id=str(uuid.uuid4()),
-            department=form.cleaned_data["department"],
-            lecturer_address=form.cleaned_data["lecturer_address"]
-        )
+            models.Lecturer.objects.create(
+                user=user,
+                staff_id=str(uuid.uuid4()),
+                department=form.cleaned_data["department"],
+                lecturer_address=form.cleaned_data["lecturer_address"]
+            )
 
-        return response
-
+            return response
+        except Exception as exc:
+            messages.error(self.request, str(exc))
+            return redirect(reverse('accounts:signup_lecturer'))
 
 
 class LoginView(BaseLoginView):
@@ -85,6 +98,7 @@ class LoginView(BaseLoginView):
              self.request.session.set_expiry(0)  # if remember me is set
              self.request.session.modified = True
         return super().form_valid(form)
+
 
 class ProfileView(LoginRequiredMixin, generic.DetailView):
     login_url = reverse_lazy('accounts:login')
@@ -111,6 +125,7 @@ class ProfileView(LoginRequiredMixin, generic.DetailView):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(username=self.request.user.username)
+
 
 class EditProfileView(LoginRequiredMixin, generic.TemplateView):
     login_url = reverse_lazy('accounts:login')
@@ -213,8 +228,9 @@ class EditProfileView(LoginRequiredMixin, generic.TemplateView):
                 else:
                     messages.error(request, form.errors)
                     return HttpResponseRedirect(reverse('accounts:setting', kwargs={'username': user.username}))
+        
         # check image upload
-        upload = request.FILES.get('filepond', None)
+        upload = request.FILES.get('avatar', None)
         if upload:
             user = get_user_model().objects.get(username=user.username)
             user.avatar = upload

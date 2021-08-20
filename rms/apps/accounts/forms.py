@@ -36,8 +36,7 @@ class UserForm(forms.Form):
     avatar = forms.ImageField(label="", required=False, widget=forms.FileInput(
         attrs={
             'type': 'file',
-            'class': 'filepond',
-            'name': 'filepond',
+            'class': 'form-control',
             'accept': "image/png, image/jpeg, image/gif"
         }
     ))
