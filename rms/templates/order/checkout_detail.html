@@ -5,6 +5,13 @@
       Checkout
     </h3>
   </div>
+  {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{message.tags}} alert-dismissible fade show my-5" role="alert">
+      <small>{{message}}</small>
+    </div>
+    {% endfor %}
+  {% endif %}
   <p>You currently have <strong>{{request.session.cart.items|length}}</strong> items in your cart</p>
   {% if request.session.cart.items %}
   <table class="table text-nowrap mb-0 mt-5">

@@ -41,6 +41,13 @@
       </div>
     </div>
     <section class="page-section">
+      {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{message.tags}} alert-dismissible fade show my-5" role="alert">
+          <small>{{message}}</small>
+        </div>
+        {% endfor %}
+      {% endif %}
       <div class="row">
         
         {% if user.is_authenticated and user.is_worker and user.worker.worker_role == "manager"%} 

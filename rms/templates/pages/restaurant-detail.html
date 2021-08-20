@@ -73,6 +73,13 @@
             Available Menu
           </p>
         </div>
+        {% if messages %}
+          {% for message in messages %}
+          <div class="alert alert-{{message.tags}} alert-dismissible fade show my-5" role="alert">
+            <small>{{message}}</small>
+          </div>
+          {% endfor %}
+        {% endif %}
         {% if object.menus %}
         <div class="col-12 d-flex justify-content-end">
           <a href="{% url 'restaurants:menu-list' object.slug %}">View all</a>

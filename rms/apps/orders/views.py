@@ -234,6 +234,7 @@ def cart_add(request, cafeteria_slug, id):
     cart = Cart(request)
     product = Menu.objects.get(id=id)
     cart.add(product=product)
+    messages.success(request, f"{product.name} successfully added to cart")
     return redirect(f"restaurants:cafeteria-detail", cafeteria_slug=cafeteria_slug)
 
 
@@ -242,6 +243,7 @@ def item_clear(request, id):
     cart = Cart(request)
     product = Menu.objects.get(id=id)
     cart.remove(product)
+    messages.success(request, f"{product.name} successfully removed from cart")
     if request.is_ajax():
         return redirect("orders:cart_detail")
     else:
@@ -253,6 +255,7 @@ def item_increment(request, id):
     cart = Cart(request)
     product = Menu.objects.get(id=id)
     cart.add(product=product)
+    messages.success(request, f"{product.name} quantity successfully incremented in cart")
     if request.is_ajax():
         return redirect("orders:cart_detail")
     else:
@@ -264,6 +267,7 @@ def item_decrement(request, id):
     cart = Cart(request)
     product = Menu.objects.get(id=id)
     cart.decrement(product=product)
+    messages.warning(request, f"{product.name} quantity successfully decremented in cart")
     if request.is_ajax():
         return redirect("orders:cart_detail")
     else:
@@ -274,6 +278,7 @@ def item_decrement(request, id):
 def cart_clear(request):
     cart = Cart(request)
     cart.clear()
+    messages.success(request, f"Your cart have been successfully cleared")
     if request.is_ajax():
         return redirect("orders:cart_detail")
     else:
