@@ -5,5 +5,6 @@ class RestaurantsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'rms.apps.restaurants'
 
-    def ready(self) -> None:
-        from . import signals
+    # disable post migration signals
+    # def ready(self) -> None:
+    #     from . import signals

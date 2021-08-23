@@ -21,6 +21,10 @@ class StudentRegistrationView(generic.FormView):
     def form_valid(self, form):
         response = super().form_valid(form)
         try:
+            if form.cleaned_data["password"] != form.cleaned_data["confirm_password"]:
+                form.add_error("password", "The password and confirmation do not match")
+                form.add_error("confirm_password", "The password and confirmation do not match")
+                return self.form_invalid(form)
             # Create user to be associated with student
             user = get_user_model().objects.create(
                 username=form.cleaned_data["username"],
@@ -45,6 +49,7 @@ class StudentRegistrationView(generic.FormView):
                 admission_year=form.cleaned_data["admission_year"],
                 student_address=form.cleaned_data["student_address"]
             )
+            messages.success(self.request, "Your account have been successfully registered.")
             return response
         except Exception as exc:
             messages.error(self.request, str(exc))
@@ -60,6 +65,10 @@ class LecturerRegistrationView(generic.FormView):
     def form_valid(self, form):
         response = super().form_valid(form)
         try:
+            if form.cleaned_data["password"] != form.cleaned_data["confirm_password"]:
+                form.add_error("password", "The password and confirmation do not match")
+                form.add_error("confirm_password", "The password and confirmation do not match")
+                return self.form_invalid(form)
             # Create user to be associated with student
             user = get_user_model().objects.create(
                 username=form.cleaned_data["username"],
@@ -82,7 +91,7 @@ class LecturerRegistrationView(generic.FormView):
                 department=form.cleaned_data["department"],
                 lecturer_address=form.cleaned_data["lecturer_address"]
             )
-
+            messages.success(self.request, "Your account have been successfully registered.")
             return response
         except Exception as exc:
             messages.error(self.request, str(exc))
