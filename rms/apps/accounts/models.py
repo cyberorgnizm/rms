@@ -14,7 +14,6 @@ class User(AbstractUser):
     )
 
     avatar = models.ImageField(upload_to="users", verbose_name="upload photo", null=True, blank=True)
-    bio = models.TextField(verbose_name="About", blank=True, null=True)
     gender = models.CharField(max_length=1, choices=GENDER, blank=True, null=True, verbose_name="gender")
     phone = PhoneNumberField(null=True, blank=True)
     is_student = models.BooleanField(default=False, help_text="Designates whether the user is a student")

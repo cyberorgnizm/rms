@@ -171,6 +171,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CART_SESSION_ID = 'cart'
 
 
+# Django phone number
+PHONENUMBER_DEFAULT_REGION = 'NG'
+
 # Cloudinary settings
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': getenv('CLOUDINARY_CLOUD_NAME', ''),
