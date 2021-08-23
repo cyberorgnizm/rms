@@ -51,7 +51,8 @@
               <h4 class="mb-1">General Settings</h4>
             </div>
             <form method="POST" enctype="multipart/form-data">
-              {% csrf_token %} {% if user.avatar %}
+              {% csrf_token %} 
+              {% if user.avatar %}
               <div class="row align-items-center mb-8">
                 <div class="col-md-10 mx-auto">
                   <div class="d-flex justify-content-center align-items-center">
@@ -74,9 +75,13 @@
                 </div>
               </div>
               {% else %}
-              <div class="input-group-sm mb-3">
-                <label class="input-group-text" for="avatarInput">Upload</label>
-                <input type="file" name="avatar" class="form-control" id="avatarInput">
+              <div class="row align-items-center mb-4">
+                <div class="col-md-6 mx-auto">
+                  <div class="input-group-sm d-flex mb-3">
+                    <input type="file" name="avatar" class="form-control" id="avatarInput">
+                    <label class="input-group-text" for="avatarInput">Upload</label>
+                  </div>
+                </div>
               </div>
               {% endif %}
               <div>

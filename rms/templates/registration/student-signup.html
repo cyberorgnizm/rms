@@ -21,14 +21,8 @@
           <!-- form -->
           <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
-            <div class="d-flex justify-content-center my-5">
-              <div class="input-group">
-                {{form.avatar}}
-                <label class="input-group-text" for="{{form.avatar.id_for_label}}">Upload</label>
-              </div>
-            </div>
             <!-- First and Last name -->
-            <div class="row mb-3">
+            <div class="row mb-3 mt-4">
               <div class="col-12">
                 <small class="text-danger">{{form.non_field_errors}}</small>
               </div>

@@ -160,13 +160,6 @@
               <div class="card-body">
                 <!-- card title -->
                 <h4 class="card-title text-center mb-4">About Me</h4>
-                {% if user.bio %}
-                <span class="text-uppercase fw-medium text-dark fs-5 ls-2"
-                  >Bio</span
-                >
-                <!-- text -->
-                <p class="mt-2 mb-6">{{user.bio}}</p>
-                {% endif %}
                 <!-- row -->
                 <div class="row">
                   {% if user.is_superuser or user.is_worker %}
