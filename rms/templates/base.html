@@ -43,13 +43,20 @@
     <script src="{% static 'js/theme.min.js' %}"></script>
     <script>
       $(function () {
-          $(window).on('scroll', function () {
+          var width = window.matchMedia("(max-width: 1200px)");
+          if (width.matches) {
+            // small screen
+            $('.navbar').addClass('navbar-classic');
+          }else{
+            // large screen
+            $(window).on('scroll', function () {
               if ( $(window).scrollTop() > 10 ) {
                   $('.navbar').addClass('navbar-classic');
               } else {
                   $('.navbar').removeClass('navbar-classic');
               }
           });
+          }
       });
     </script>
     <!-- javascripts section -->

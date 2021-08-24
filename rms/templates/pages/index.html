@@ -10,8 +10,8 @@
       {% include 'pages/includes/navbar.html' %}
     </div>
 
-    <!-- Cafeteria carousel -->
-    <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel">
+    <!-- Cafeteria carousel (Medium to Large Screens)-->
+    <div id="carouselExampleFade" class="carousel slide carousel-fade d-none d-md-block" data-bs-ride="carousel">
       <div class="carousel-indicators">
         <button type="button" data-bs-target="#carouselExampleFade" data-bs-slide-to="0" class="active"
           aria-current="true" aria-label="Slide 1"></button>
@@ -75,6 +75,18 @@
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
         <span class="visually-hidden">Next</span>
       </a>
+    </div>
+    <!-- (Extra Small and Small Screens) -->
+    <div class="row d-xs-block d-md-none pt-10">
+      <div class="col-xs-6 mx-auto text-center text-white mt-10 mb-10">
+        <h1 class="text-white">Welcome to BHU Cafeterias</h1>
+        <p>If this is your first time here, please click the button below to register or click the top right menu to navigate around the website</p>
+        <a href="{% url 'accounts:signup_student' %}" class="btn btn-primary btn-lg btn-block">Get Started</a>
+      </div>
+      <div class="col-12 position-absolute mb-5 overflow-hidden px-0" style="z-index: -999; background: rgba(0, 0, 0, 0.7) !important; width:100vw; left: 0; right: 0;">
+        <img src="{% static 'images/background/carousel/adrien-olichon-ZgREXhl8ER0-unsplash.jpg' %}" class="d-block"
+            style="width:100vw; height:300px; object-fit: cover; object-position: center" alt="...">
+      </div>
     </div>
     <!-- description section -->
     <section class="page-section mt-10 mb-10" id="services">
